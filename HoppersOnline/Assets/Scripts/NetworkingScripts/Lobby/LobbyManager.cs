@@ -55,6 +55,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         {
             RoomOptions roomOptions = new RoomOptions();
             roomOptions.MaxPlayers = 4;
+            roomOptions.BroadcastPropsChangeToAll = true;
             PhotonNetwork.CreateRoom(roomInputField.text, roomOptions);
         }
         else
@@ -66,6 +67,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         PhotonNetwork.LoadLevel("MultiHopperSelectionScene");
+        
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
@@ -79,17 +81,23 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     private void UpdateRoomList(List<RoomInfo> list)
     {
+        Debug.Log("UpdateList Callback");
         foreach (RoomItem item in roomItemsList)
         {
             Destroy(item.gameObject);
         }
         roomItemsList.Clear();
-
+        int n = 0;
         foreach (RoomInfo room in list)
         {
-            RoomItem newRoom = Instantiate(roomItemPrefab, contentObject);
-            newRoom.SetRoomName(room.Name);
-            roomItemsList.Add(newRoom);
+            Debug.Log("ROOM " + n);
+            n++;
+            if (room.IsOpen)
+            {
+                RoomItem newRoom = Instantiate(roomItemPrefab, contentObject);
+                newRoom.SetRoomName(room.Name);
+                roomItemsList.Add(newRoom);
+            }
         }
     }
 

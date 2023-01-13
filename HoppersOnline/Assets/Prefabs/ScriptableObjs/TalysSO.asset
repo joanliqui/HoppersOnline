@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: baae604aaae6fb34d9aafd40bee38ffe, type: 3}
+  m_Name: TalysSO
+  m_EditorClassIdentifier: 
+  characterName: Talys
+  characterSprite: {fileID: 605049481, guid: c479d55e5d1dac34e87a39b79d1124d2, type: 3}
+  netCharacterPrefab: {fileID: 7628258040096527772, guid: 84423b303b3d30946a39f07c00376b21, type: 3}
+  offCharacterPrefab: {fileID: 0}
