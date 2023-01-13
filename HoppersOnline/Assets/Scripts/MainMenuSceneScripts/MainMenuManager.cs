@@ -11,12 +11,12 @@ public class MainMenuManager : MonoBehaviour
 
     public void MultiplayerButton()
     {
-
+        SceneManager.LoadScene("LobbyScene");
     }
 
     public void SoloButton()
     {
-
+        SceneManager.LoadScene("SoloHopperSelectionScene");
     }
 
     public void CreditsScene()

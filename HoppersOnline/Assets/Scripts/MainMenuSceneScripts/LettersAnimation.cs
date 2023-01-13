@@ -45,7 +45,6 @@ public class LettersAnimation : MonoBehaviour
             {
                 if (canJump)
                 {
-                    Debug.Log("JUMP");
                     BounceLetter();
                     canJump = false;
                 }
@@ -53,7 +52,6 @@ public class LettersAnimation : MonoBehaviour
             else
             {
                 actualLetter = RandomLetter();
-                Debug.Log("SWAPED LETTER");
                 swapLetter = false;
                 canJump = true;
             }

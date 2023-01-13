@@ -17,4 +17,16 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/CreditsScene.unity
     guid: 87ca93b254e155c4295c1d4fd28cd408
+  - enabled: 0
+    path: Assets/Scenes/ConnectServerScene.unity
+    guid: 0a0cd1d74af332a4f8c653166f44255c
+  - enabled: 1
+    path: Assets/Scenes/LobbyScene.unity
+    guid: 2500e044df5ab464b877610d1fa612b4
+  - enabled: 1
+    path: Assets/Scenes/MultiHopperSelectionScene.unity
+    guid: ab5de67188e496b439e532dbb9ee8c08
+  - enabled: 1
+    path: Assets/Scenes/SoloHopperSelectionScene.unity
+    guid: d554c34d236213e438b2076928218bfd
   m_configObjects: {}
