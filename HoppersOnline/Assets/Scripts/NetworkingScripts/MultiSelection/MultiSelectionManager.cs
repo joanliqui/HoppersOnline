@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Photon.Pun;
-using UnityEngine.SceneManagement;
 using Photon.Realtime;
 
 public class MultiSelectionManager : MonoBehaviourPunCallbacks
@@ -16,91 +15,127 @@ public class MultiSelectionManager : MonoBehaviourPunCallbacks
     [SerializeField] Transform holdersContent;
     [SerializeField] List<CharacterSO> charactersList;
 
+    //PLAYER PROPERTIES
     ExitGames.Client.Photon.Hashtable playerProperties = new ExitGames.Client.Photon.Hashtable();
 
-    private void Start()
+    [SerializeField] TextMeshProUGUI playerIdDisplay;
+
+    //Se llama desde OnJoinedRoom callback en el LobbyManager 
+    public void OnEnterRoom()
     {
-        if (PhotonNetwork.InRoom)
-        {
-            roomNameDisplay.text = PhotonNetwork.CurrentRoom.Name;
-            UpdatePlayerList();
-            SetCharacterHolders();
-        }
+        roomNameDisplay.text = PhotonNetwork.CurrentRoom.Name;
+        playerIdDisplay.text = PhotonNetwork.LocalPlayer.UserId;
+        SetCharacterHolders();
+        UpdatePlayerList();
+        InicializePlayerProperties();
     }
 
     private void SetCharacterHolders()
     {
         foreach (Transform item in holdersContent)
         {
-            Destroy(item);
+            Destroy(item.gameObject);
         }
 
         foreach (CharacterSO item in charactersList)
         {
             CharacterHolder newHolder = Instantiate(holderPrefab, holdersContent);
             newHolder.SetCharacterHolder(item);
+            newHolder.onClickedButton += OnCharacterClick;
         }
     }
 
-    public void InicializePlayerProperties()
-    {
-        playerProperties["characterPrefab"] = null;
-    }
+   
 
-    public void ExitRoom()
+    public void OnExitRoomClick()
     {
         PhotonNetwork.LeaveRoom();
     }
     
-    public override void OnLeftRoom()
-    {
-        SceneManager.LoadScene("LobbyScene");
-    }
-
    
-    private void UpdatePlayerList()
+    public void UpdatePlayerList()
     {
         if (PhotonNetwork.CurrentRoom == null) return;
 
+        Debug.Log("UpdatePlayerList Method");
+        foreach(PlayerItem item in playerItems)
+        {
+            item.ClearItem();
+        }
+
+        //Por cada Player que haya en el Room
+        int i = 0;
         foreach (KeyValuePair<int, Player> player in PhotonNetwork.CurrentRoom.Players)
         {
-           // Debug.Log(PhotonNetwork.CurrentRoom.Players.Count);
-            PlayerItem item = playerItems[player.Key - 1];
-            Debug.Log(player.Key - 1);
+            PlayerItem item = playerItems[i];
+            item.ActivateItem();
             item.SetPlayerInfo(player.Value);
+        
+
+            if(i < PhotonNetwork.CurrentRoom.PlayerCount)
+            {
+                i++;
+            }
+            ////En caso de que este sea nuestro player, remarcamos la casilla
             if(player.Value == PhotonNetwork.LocalPlayer)
             {
                 item.ApplyLocalChanges();
             }
         }
-
-
-        foreach (PlayerItem item in playerItems)
-        {
-            if(item.MyPlayer == null || item.MyPlayer.ActorNumber <= 0 )
-            {
-                Debug.Log(item.name);
-                item.SetItemEmpty();
-            }
-        }
     }
-
+  
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        Debug.Log("OnPlayerEnterCallback - Player:" + newPlayer.ActorNumber);
-        //UpdatePlayerList();
+        UpdatePlayerList();
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        Debug.Log("OnPlayerLeft   Count:" + PhotonNetwork.CurrentRoom.PlayerCount);
-        foreach (PlayerItem item in playerItems)
+        Debug.Log("Player left the room");
+        UpdatePlayerList();
+    }
+
+
+    //Setea la propiedad del sprite escogido a traves del network
+    public void OnCharacterClick(CharacterSO characterSO)
+    {
+        for (int i = 0; i < charactersList.Count; i++)
         {
-            if(item.MyPlayer == otherPlayer)
+            if(charactersList[i] == characterSO)
             {
-                item.SetItemEmpty();
+                playerProperties["playerAvatar"] = i;
+                break;
             }
         }
-        UpdatePlayerList();
+        PhotonNetwork.SetPlayerCustomProperties(playerProperties);
+    }
+
+    public void InicializePlayerProperties()
+    {
+        playerProperties["playerAvatar"] = -1;
+    }
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
+    {
+        Debug.Log("PlayerPropertiesUpdate callback");
+        UpdatePlayerPropertiesOverNetwork(targetPlayer);
+    }
+
+    private void UpdatePlayerPropertiesOverNetwork(Player p)
+    {
+        foreach (PlayerItem item in playerItems)
+        {
+            if (item.MyPlayer == p)
+            {
+                if (p.CustomProperties.ContainsKey("playerAvatar"))
+                {
+                    item.SelectedCharacter(charactersList[(int)p.CustomProperties["playerAvatar"]].characterSprite);
+                }
+                else
+                {
+                    playerProperties["playerAvatar"] = -1;
+                }
+                break;
+            }
+        }
     }
 }

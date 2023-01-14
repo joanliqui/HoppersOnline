@@ -9,47 +9,45 @@ using Photon.Realtime;
 public class PlayerItem : MonoBehaviour
 {
     [SerializeField] Image bg;
-    [SerializeField] Color localColor;
-    [SerializeField] Color emptyColor;
     private Image border;
 
-    private Player myPlayer;
+    [SerializeField] Color highlightColor;
+    [SerializeField] Color emptyColor;
 
-    PhotonView view;
+    private Player myPlayer = null;
 
     private void Awake()
     {
         border = GetComponent<Image>();
-        view = GetComponent<PhotonView>();
     }
     public Player MyPlayer { get => myPlayer;}
 
     public void SetPlayerInfo(Player _player)
-    {
-        view.RPC("SetPlayerInfoRPC", RpcTarget.All, _player);
-    }
-
-    [PunRPC]
-    private void SetPlayerInfoRPC(Player _player)
     {
         myPlayer = _player;
     }
 
     public void ApplyLocalChanges()
     {
-        bg.color = localColor;   
+        border.color = highlightColor;   
     }
 
-    public void SetItemEmpty()
+    public void ActivateItem()
     {
-        view.RPC("SetItemEmptyRPC", RpcTarget.All);
+        border.color = Color.white;
+        bg.color = Color.white;
     }
-
-    [PunRPC]
-    private void SetItemEmptyRPC()
+    public void ClearItem()
     {
         border.color = emptyColor;
         bg.color = emptyColor;
         myPlayer = null;
     }
+
+    public void SelectedCharacter(Sprite characterSprite)
+    {
+        bg.sprite = characterSprite;
+    }
+
+
 }

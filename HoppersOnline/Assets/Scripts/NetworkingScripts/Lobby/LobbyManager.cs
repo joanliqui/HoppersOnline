@@ -4,12 +4,14 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
+using Photon.Pun.UtilityScripts;
 public class LobbyManager : MonoBehaviourPunCallbacks
 {
     ConnectToServer cts;
 
     [SerializeField] TMP_InputField roomInputField;
     [SerializeField] GameObject lobbyPanel;
+    [SerializeField] GameObject roomPanel;
 
     [SerializeField] RoomItem roomItemPrefab;
     List<RoomItem> roomItemsList = new List<RoomItem>();
@@ -17,10 +19,17 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     [SerializeField] float timeBtwUpdates = 1.5f;
     float nextUpdateTime = 0;
+    
+
+    MultiSelectionManager selectionManager;
     private void Awake()
     {
         lobbyPanel.SetActive(false);
+        roomPanel.SetActive(false);
+
+        selectionManager = GameObject.FindGameObjectWithTag("SelectionManager").GetComponent<MultiSelectionManager>();
         cts = GetComponent<ConnectToServer>();
+        
         if (!PhotonNetwork.IsConnected)
             cts.ConnectServer();
         else Debug.Log("Ya estas conectado a un servidor");
@@ -38,10 +47,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         {
             PhotonNetwork.JoinLobby();
         }
-        else
-        {
-            Debug.LogWarning("No estas conectado a ningun lobby");
-        }
     }
 
     //private void Start()
@@ -56,6 +61,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             RoomOptions roomOptions = new RoomOptions();
             roomOptions.MaxPlayers = 4;
             roomOptions.BroadcastPropsChangeToAll = true;
+            roomOptions.PublishUserId = true;
+            roomOptions.PlayerTtl = 0;
             PhotonNetwork.CreateRoom(roomInputField.text, roomOptions);
         }
         else
@@ -64,11 +71,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public override void OnJoinedRoom()
-    {
-        PhotonNetwork.LoadLevel("MultiHopperSelectionScene");
-        
-    }
+ 
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
@@ -87,11 +90,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             Destroy(item.gameObject);
         }
         roomItemsList.Clear();
-        int n = 0;
         foreach (RoomInfo room in list)
         {
-            Debug.Log("ROOM " + n);
-            n++;
             if (room.IsOpen)
             {
                 RoomItem newRoom = Instantiate(roomItemPrefab, contentObject);
@@ -104,5 +104,20 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public void JoinRoom(string _roomName)
     {
         PhotonNetwork.JoinRoom(_roomName);
+    }
+
+    public override void OnJoinedRoom()
+    {
+        lobbyPanel.SetActive(false);
+        roomPanel.SetActive(true);
+
+        selectionManager.OnEnterRoom();
+    }
+
+    public override void OnLeftRoom()
+    {
+        lobbyPanel.SetActive(true);
+        roomPanel.SetActive(false);
+        selectionManager.UpdatePlayerList();
     }
 }
