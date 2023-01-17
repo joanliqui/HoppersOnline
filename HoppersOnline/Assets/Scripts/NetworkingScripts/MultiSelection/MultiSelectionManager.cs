@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
+using System;
 
 public class MultiSelectionManager : MonoBehaviourPunCallbacks
 {
@@ -13,21 +14,23 @@ public class MultiSelectionManager : MonoBehaviourPunCallbacks
     [Header("Holders")]
     [SerializeField] CharacterHolder holderPrefab;
     [SerializeField] Transform holdersContent;
-    [SerializeField] List<CharacterSO> charactersList;
+    [SerializeField] CharactersListSO charactersList;
+    bool selected = false;
 
+    [Header("StartGame")]
+    [SerializeField] GameObject playButton;
     //PLAYER PROPERTIES
     ExitGames.Client.Photon.Hashtable playerProperties = new ExitGames.Client.Photon.Hashtable();
-
-    [SerializeField] TextMeshProUGUI playerIdDisplay;
 
     //Se llama desde OnJoinedRoom callback en el LobbyManager 
     public void OnEnterRoom()
     {
         roomNameDisplay.text = PhotonNetwork.CurrentRoom.Name;
-        playerIdDisplay.text = PhotonNetwork.LocalPlayer.UserId;
+        selected = false;
         SetCharacterHolders();
-        UpdatePlayerList();
+
         InicializePlayerProperties();
+        UpdatePlayerList();
     }
 
     private void SetCharacterHolders()
@@ -37,21 +40,25 @@ public class MultiSelectionManager : MonoBehaviourPunCallbacks
             Destroy(item.gameObject);
         }
 
-        foreach (CharacterSO item in charactersList)
+        foreach (CharacterSO item in charactersList.charactersList)
         {
             CharacterHolder newHolder = Instantiate(holderPrefab, holdersContent);
             newHolder.SetCharacterHolder(item);
             newHolder.onClickedButton += OnCharacterClick;
+            newHolder.onPointerEntered += OnCharacterPointerEntered;
+            newHolder.onPointerExit += OnCharacterPointerExited;
         }
     }
-
-   
-
+    public void InicializePlayerProperties()
+    {
+        playerProperties["playerAvatar"] = -1;
+        playerProperties["playerNumber"] = (int)PhotonNetwork.CurrentRoom.PlayerCount;
+        PhotonNetwork.SetPlayerCustomProperties(playerProperties);
+    }
     public void OnExitRoomClick()
     {
         PhotonNetwork.LeaveRoom();
-    }
-    
+    }   
    
     public void UpdatePlayerList()
     {
@@ -63,19 +70,17 @@ public class MultiSelectionManager : MonoBehaviourPunCallbacks
             item.ClearItem();
         }
 
-        //Por cada Player que haya en el Room
-        int i = 0;
+        int n = 0;
+        //Por cada Player que haya en el Room activamos el holder y lo seteamos con cada player
         foreach (KeyValuePair<int, Player> player in PhotonNetwork.CurrentRoom.Players)
         {
-            PlayerItem item = playerItems[i];
+
+            PlayerItem item = playerItems[n];
             item.ActivateItem();
             item.SetPlayerInfo(player.Value);
-        
 
-            if(i < PhotonNetwork.CurrentRoom.PlayerCount)
-            {
-                i++;
-            }
+            n++;
+
             ////En caso de que este sea nuestro player, remarcamos la casilla
             if(player.Value == PhotonNetwork.LocalPlayer)
             {
@@ -95,29 +100,54 @@ public class MultiSelectionManager : MonoBehaviourPunCallbacks
         UpdatePlayerList();
     }
 
-
     //Setea la propiedad del sprite escogido a traves del network
-    public void OnCharacterClick(CharacterSO characterSO)
+    private void OnCharacterClick(CharacterSO characterSO)
     {
-        for (int i = 0; i < charactersList.Count; i++)
+        for (int i = 0; i < charactersList.charactersList.Count; i++)
         {
-            if(charactersList[i] == characterSO)
+            if(charactersList.charactersList[i] == characterSO)
             {
                 playerProperties["playerAvatar"] = i;
+                selected = true;
                 break;
             }
         }
         PhotonNetwork.SetPlayerCustomProperties(playerProperties);
     }
 
-    public void InicializePlayerProperties()
+    private void OnCharacterPointerEntered(CharacterSO chararcterSo)
     {
-        playerProperties["playerAvatar"] = -1;
+        if (selected)
+            return;
+
+
+        foreach (PlayerItem item in playerItems)
+        {
+            if(item.MyPlayer == PhotonNetwork.LocalPlayer)
+            {
+                item.PointedCharacter(chararcterSo.characterSprite);
+            }
+        }
     }
+
+    private void OnCharacterPointerExited()
+    {
+        if (selected)
+            return;
+        foreach (PlayerItem item in playerItems)
+        {
+            if (item.MyPlayer == PhotonNetwork.LocalPlayer)
+            {
+                item.ResetItemOnPoinerExit();
+            }
+        }
+    }
+
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
     {
-        Debug.Log("PlayerPropertiesUpdate callback");
+        Debug.Log("AAAAAAAAAAAAAA");
         UpdatePlayerPropertiesOverNetwork(targetPlayer);
+        ShowPlayButton();
     }
 
     private void UpdatePlayerPropertiesOverNetwork(Player p)
@@ -128,14 +158,51 @@ public class MultiSelectionManager : MonoBehaviourPunCallbacks
             {
                 if (p.CustomProperties.ContainsKey("playerAvatar"))
                 {
-                    item.SelectedCharacter(charactersList[(int)p.CustomProperties["playerAvatar"]].characterSprite);
+                    if((int)p.CustomProperties["playerAvatar"] != -1)
+                    {
+                        item.SelectedCharacter(charactersList.charactersList[(int)p.CustomProperties["playerAvatar"]].characterSprite);
+                    }
                 }
-                else
-                {
-                    playerProperties["playerAvatar"] = -1;
-                }
-                break;
+                return;
             }
         }
+    }
+
+    private void Update()
+    {
+        ShowPlayButton();
+    }
+
+    /// <summary>
+    /// Solo se le muestra el boton al MasterClient cuando haya mas de 1 jugador, y cuando todos los jugadores hayan seleccionado algun personaje
+    /// </summary>
+    public void ShowPlayButton()
+    {
+        if(PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount > 1)
+        {
+            int playersInRoom = PhotonNetwork.CurrentRoom.PlayerCount;
+            int n = 0;
+
+            foreach (KeyValuePair<int, Player> player in PhotonNetwork.CurrentRoom.Players)
+            {
+                if(player.Value.CustomProperties.ContainsKey("playerAvatar"))
+                {
+                    if((int)player.Value.CustomProperties["playerAvatar"] != -1)
+                    {
+                        n++;
+                    }
+                }
+            }
+            playButton.SetActive(n == playersInRoom);
+        }
+        else
+        {
+            playButton.SetActive(false);
+        }
+    }
+
+    public void OnClickPlayButton()
+    {
+        PhotonNetwork.LoadLevel("GameplayScene");
     }
 }

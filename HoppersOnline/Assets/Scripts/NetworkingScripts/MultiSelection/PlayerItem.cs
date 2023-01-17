@@ -8,17 +8,20 @@ using Photon.Realtime;
 
 public class PlayerItem : MonoBehaviour
 {
+    Sprite initialSprite;
     [SerializeField] Image bg;
     private Image border;
 
     [SerializeField] Color highlightColor;
     [SerializeField] Color emptyColor;
+    [SerializeField] Color pointedColor;
 
     private Player myPlayer = null;
 
     private void Awake()
     {
         border = GetComponent<Image>();
+        initialSprite = bg.sprite;
     }
     public Player MyPlayer { get => myPlayer;}
 
@@ -41,12 +44,26 @@ public class PlayerItem : MonoBehaviour
     {
         border.color = emptyColor;
         bg.color = emptyColor;
+        bg.sprite = initialSprite;
         myPlayer = null;
+    }
+
+    public void ResetItemOnPoinerExit()
+    {
+        bg.color = Color.white;
+        bg.sprite = initialSprite;
     }
 
     public void SelectedCharacter(Sprite characterSprite)
     {
+        bg.color = Color.white;
         bg.sprite = characterSprite;
+    }
+
+    public void PointedCharacter(Sprite characterSprite)
+    {
+        bg.sprite = characterSprite;
+        bg.color = pointedColor;
     }
 
 

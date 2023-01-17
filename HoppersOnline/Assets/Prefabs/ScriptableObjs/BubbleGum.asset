@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: BubbleGum
   characterSprite: {fileID: 1235642064, guid: c479d55e5d1dac34e87a39b79d1124d2, type: 3}
-  netCharacterPrefab: {fileID: 0}
+  netCharacterPrefab: {fileID: 2030510415695533781, guid: 44abad8dfaf987545b43abcaaaa535be, type: 3}
   offCharacterPrefab: {fileID: 0}

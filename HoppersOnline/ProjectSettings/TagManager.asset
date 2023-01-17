@@ -6,6 +6,7 @@ TagManager:
   tags:
   - LobbyManager
   - SelectionManager
+  - GameMode
   layers:
   - Default
   - TransparentFX

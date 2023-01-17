@@ -4,7 +4,6 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
-using Photon.Pun.UtilityScripts;
 public class LobbyManager : MonoBehaviourPunCallbacks
 {
     ConnectToServer cts;
@@ -49,11 +48,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         }
     }
 
-    //private void Start()
-    //{
-    //    PhotonNetwork.JoinLobby();
-    //}
-
     public void OnClickCreate()
     {
         if(roomInputField.text.Length >= 4)
@@ -70,8 +64,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             Debug.LogWarning("El nombre de la sala ha de tener minimo 4 carácteres");
         }
     }
-
- 
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
