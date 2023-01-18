@@ -145,7 +145,6 @@ public class MultiSelectionManager : MonoBehaviourPunCallbacks
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
     {
-        Debug.Log("AAAAAAAAAAAAAA");
         UpdatePlayerPropertiesOverNetwork(targetPlayer);
         ShowPlayButton();
     }
