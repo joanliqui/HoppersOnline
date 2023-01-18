@@ -26,11 +26,11 @@ public class BaseHopper : MonoBehaviour, IDamageable
     [Header("JumpVariables")] 
     [SerializeField] float maxJumpTime = 0.5f;
     [SerializeField] float initialJumpVelocity;
-    [SerializeField] float jumpCutMomentum = 2f;
+    [Range(0.0f, 1.0f)]
+    [SerializeField] float jumpCutMomentum = 0.2f;
     private float cntTimeJumping;
     private bool isJumping;
     private bool isJumpCanceled = false;
-
 
     //gravity variables
     [SerializeField] float lowGravity = -9.8f;
@@ -40,6 +40,7 @@ public class BaseHopper : MonoBehaviour, IDamageable
     private Animator anim;
     private int hVelocityHashAnim;
     private int isGroundedHashAnim;
+    private int vVelocityHashAnim;
 
     #region ComponentReferences
     private Controls _inputs;
@@ -68,6 +69,7 @@ public class BaseHopper : MonoBehaviour, IDamageable
 
         hVelocityHashAnim = Animator.StringToHash("hVelocity");
         isGroundedHashAnim = Animator.StringToHash("isGrounded");
+        vVelocityHashAnim = Animator.StringToHash("vVelocity");
 
         _inputs.Player.Move.performed += ReadMovement;
         _inputs.Player.Move.canceled += ReadMovement;
@@ -88,10 +90,8 @@ public class BaseHopper : MonoBehaviour, IDamageable
     {
         _isGrounded = IsGrounded();
 
-        if (_isGrounded)
-        {
-            RunMovement();
-        }
+        HorizontalMovement();
+        
         Gravity();
         Jump();
 
@@ -105,9 +105,16 @@ public class BaseHopper : MonoBehaviour, IDamageable
 
    
 
-    private void RunMovement()
+    private void HorizontalMovement()
     {
-        appliedMovement.x = hDir * movSpeed;
+        if (_isGrounded)
+        {
+            appliedMovement.x = hDir * movSpeed;
+        }
+        else
+        {
+            appliedMovement.x = hDir * movSpeed * airMovementMultiplier;
+        }
     }
 
     private void Gravity()
@@ -136,28 +143,6 @@ public class BaseHopper : MonoBehaviour, IDamageable
         {
             Debug.Log("Pa tocar los huevos");
         }
-
-        //if (!_isGrounded && isJumping && rb.velocity.y > 0f) //Estoy subiendo despues de haberle dado a saltar;
-        //{
-        //    Debug.Log("sUBIENDO");
-        //    currentMovement.y += lowGravity;
-        //    appliedMovement.y += lowGravity;
-        //}
-        //else if(!_isGrounded && isJumping && rb.velocity.y <= 0f) //Estoy bajando despues de haberle dado a saltar saltado
-        //{
-        //    currentMovement.y += hardGravity;
-        //    appliedMovement.y += hardGravity;
-        //}
-        //else if(!_isGrounded && !isJumping) //Estoy cayendo sin haber saltado
-        //{
-        //    currentMovement.y += hardGravity;
-        //    appliedMovement.y += hardGravity;
-        //}
-        //else if(_isGrounded && !isJumping) // Estoy simplemente en el suelo
-        //{
-        //    currentMovement.y = -0.1f;
-        //    appliedMovement.y = -0.1f;
-        //}
     }
 
     private void Flip()
@@ -218,10 +203,9 @@ public class BaseHopper : MonoBehaviour, IDamageable
         }
     }
 
-
     private void CutJumpOnCancelOrApex()
     {
-        appliedMovement.y = appliedMovement.y / jumpCutMomentum;
+        appliedMovement.y = appliedMovement.y * jumpCutMomentum;
         isJumping = false;
         Debug.Log("Cuted");
     }
@@ -262,5 +246,6 @@ public class BaseHopper : MonoBehaviour, IDamageable
     {
         anim.SetBool(isGroundedHashAnim, _isGrounded);
         anim.SetFloat(hVelocityHashAnim, Mathf.Abs(rb.velocity.x));
+        anim.SetFloat(vVelocityHashAnim, rb.velocity.y);
     }
 }

@@ -7,6 +7,7 @@ TagManager:
   - LobbyManager
   - SelectionManager
   - GameMode
+  - InitialConnector
   layers:
   - Default
   - TransparentFX
@@ -43,4 +44,16 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 2221222097
+    locked: 0
+  - name: Ground
+    uniqueID: 226356157
+    locked: 0
+  - name: Player
+    uniqueID: 1706080647
+    locked: 0
+  - name: Front
+    uniqueID: 119155103
     locked: 0
