@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameMode : MonoBehaviour
 {
     private static GameMode _instance;
-    [SerializeField] GameModeEnum gameMode;
+    [SerializeField] GameModeEnum gameModeEnum;
 
     public static GameMode Instance { get => _instance;}
 
@@ -26,12 +26,17 @@ public class GameMode : MonoBehaviour
     {
         if (isOnline)
         {
-            gameMode = GameModeEnum.Muliplayer;
+            gameModeEnum = GameModeEnum.Muliplayer;
         }
         else
         {
-            gameMode = GameModeEnum.Solo;
+            gameModeEnum = GameModeEnum.Solo;
         }
+    }
+
+    public GameModeEnum GetGameMode()
+    {
+        return gameModeEnum;
     }
 }
 

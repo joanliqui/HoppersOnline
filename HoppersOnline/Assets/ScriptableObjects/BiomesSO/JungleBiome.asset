@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   zones:
   - {fileID: 7220467008507559687, guid: 8151033d2be2eb342b870aa1ab6c9eb5, type: 3}
+  - {fileID: 6445667243972833292, guid: 3975b545f8adc3c43896a6283badead6, type: 3}
   background: {fileID: 3726491280320305069, guid: d468722864449d64a863c6d002fad21b, type: 3}
