@@ -14,7 +14,7 @@ public class MapBuilderEditor : Editor
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("AddZone"))
         {
-            builder.AddZone();
+            builder.AddZone(TypeZone.None);
         }
 
         GUILayout.EndHorizontal();

@@ -206,7 +206,7 @@ MonoBehaviour:
     m_Bits: 64
   groundCheckDistance: 0.2
   maxJumpTime: 0.25
-  initialJumpVelocity: 7000
+  initialJumpVelocity: 8000
   jumpCutMomentum: 0.2
   lowGravity: -20
   hardGravity: -100

@@ -5,16 +5,32 @@ using UnityEngine;
 public class CameraManager : MonoBehaviour
 {
     [SerializeField] bool canMove = false;
-    [SerializeField] float initialVelocity = 1f;
+    [SerializeField] float initialSpeed = 1f;
     
-    private float cameraScrollSpeed;
+    [SerializeField] private float cntSpeed;
+    private float t = 1;
 
-    // Update is called once per frame
+
+    private void Start()
+    {
+        cntSpeed = initialSpeed;
+    }
+
     void Update()
     {
         if (canMove)
         {
-            transform.position += Vector3.up * initialVelocity * Time.deltaTime;
+            transform.position += Vector3.up * cntSpeed * Time.deltaTime;
+        }
+    }
+
+
+    public void StopCameraMovement()
+    {
+        t -= Time.deltaTime * 2;
+        if(cntSpeed > 0)
+        {
+            cntSpeed = Mathf.Lerp(0.0f, cntSpeed, t);
         }
     }
 }

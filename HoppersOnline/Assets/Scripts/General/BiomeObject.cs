@@ -4,22 +4,21 @@ using UnityEngine;
 
 public class BiomeObject : MonoBehaviour
 {
-    private enum TypeZone
-    {
-        Cloud, Jungle, Neutral
-    };
-
     [SerializeField] TypeZone typeZone;
     [SerializeField] Transform connectorPoint;
 
     [Header("Enemies Space")]
     [SerializeField] Transform[] enemySpawnPoints;
 
-    private BoxCollider2D col;
+    private Collider2D col;
     float ps;
 
     bool addZone = false;
 
+    private void Start()
+    {
+        col = GetComponent<Collider2D>();
+    }
 
     public Transform GetConnectorPoint()
     {
@@ -29,4 +28,18 @@ public class BiomeObject : MonoBehaviour
             Debug.LogError(string.Format("Connector Point of {0} is not set", gameObject.name));
         return null;
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("MainCamera"))
+        {
+            col.enabled = false;
+            MapBuilder.Instance.OnCamEnterEventCall(typeZone);
+        }
+    }
 }
+
+public enum TypeZone
+{
+    None, Cloud, Jungle, Neutral
+};

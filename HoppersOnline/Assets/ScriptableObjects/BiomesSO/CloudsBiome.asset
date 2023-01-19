@@ -15,4 +15,4 @@ MonoBehaviour:
   zones:
   - {fileID: 2767926378878300711, guid: e29a0590fee47ea498c37956ca10fba3, type: 3}
   - {fileID: 7166877108236486371, guid: c648c4e920d4b0445b95a2cfe4864d56, type: 3}
-  background: {fileID: 6402253312958616736, guid: 78b43cc322709554db6cb9b3e0bc7fc1, type: 3}
+  background: {fileID: 4043485794340440370, guid: 78b43cc322709554db6cb9b3e0bc7fc1, type: 3}

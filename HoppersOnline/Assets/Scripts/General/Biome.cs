@@ -7,17 +7,6 @@ using System;
 public class Biome : ScriptableObject
 {
     public BiomeObject[] zones;
-    public GameObject background;
+    public BackgroundController background;
 }
 
-[Serializable]
-public class Zone
-{
-    public GameObject zone;
-    public Vector3 spawnPoint;
-
-    public void SetSpawnPoint()
-    {
-        this.spawnPoint = zone.transform.Find("Connector").transform.position;
-    }
-}

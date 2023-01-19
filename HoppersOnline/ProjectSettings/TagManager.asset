@@ -48,6 +48,9 @@ TagManager:
   - name: Background
     uniqueID: 2221222097
     locked: 0
+  - name: ConnectorBackground
+    uniqueID: 3126363311
+    locked: 0
   - name: Ground
     uniqueID: 226356157
     locked: 0
