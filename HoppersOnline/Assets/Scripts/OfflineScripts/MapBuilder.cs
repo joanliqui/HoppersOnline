@@ -5,7 +5,7 @@ using UnityEngine;
 public class MapBuilder : MonoBehaviour
 {
     [SerializeField] Biome[] biomes;
-    [SerializeField] GameObject connectorZone;
+    [SerializeField] BiomeObject connectorZone;
     [SerializeField] int nZonesToConnector = 4;
     [SerializeField] int maxBiomesIn = 4;
 
@@ -17,7 +17,7 @@ public class MapBuilder : MonoBehaviour
 
     private Vector2 connectorSpawnPoint;
     private int actualBiome;
-    private int nBiomesIn = 0;
+    private int nBiomeZonesIn = 0;
     private int lastBiome = -1;
     
     Queue<BiomeObject> zonesInGame;
@@ -29,28 +29,54 @@ public class MapBuilder : MonoBehaviour
 
         InitialBuildMap();
     }
-    public void BuildMap()
+
+    public void AddZone()
     {
-        
+        while (zonesInGame.Count >= maxBiomesIn)
+        {
+            BiomeObject dequeuedZone = zonesInGame.Dequeue();
+            Destroy(dequeuedZone.gameObject);
+        }
+
+        if(nBiomeZonesIn == nZonesToConnector)
+        {
+            SwapBiome();
+        }
+
+        InstantiateRandomZone();
+
     }
 
     public void InitialBuildMap()
     {
         actualBiome = GetRandomBiome();
-        for (int i = 0; i < nZonesToConnector; i++)
+        for (int i = 0; i < maxBiomesIn; i++)
         {
-            InstantiateRandomeZone();
+            InstantiateRandomZone();
         }
     }
 
-    private void InstantiateRandomeZone()
+    /// <summary>
+    /// Cambia el bioma y resetea el contador de Zonas
+    /// </summary>
+    private void SwapBiome()
+    {
+        actualBiome = GetRandomBiome();
+        BiomeObject zona = Instantiate(connectorZone, connectorSpawnPoint, Quaternion.identity);
+        connectorSpawnPoint = zona.GetConnectorPoint().position;
+
+        zonesInGame.Enqueue(zona);
+        nBiomeZonesIn = 0;
+    }
+
+    private void InstantiateRandomZone()
     {
         int randZone; //Se genera un numero random entre 0 y el maximo de zonas que tiene el bioma que le pasamos
         randZone = Random.Range(0, biomes[actualBiome].zones.Length);
 
         BiomeObject newZone = Instantiate(biomes[actualBiome].zones[randZone], connectorSpawnPoint, Quaternion.identity);
         connectorSpawnPoint = newZone.GetConnectorPoint().position;
-        nBiomesIn++;
+        nBiomeZonesIn++;
         zonesInGame.Enqueue(newZone);
     }
 

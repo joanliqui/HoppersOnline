@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b16b1d93e39f8834f91dc85b99010472, type: 3}
   m_Name: CloudsBiome
   m_EditorClassIdentifier: 
-  background: {fileID: 0}
+  zones:
+  - {fileID: 2767926378878300711, guid: e29a0590fee47ea498c37956ca10fba3, type: 3}
+  - {fileID: 7166877108236486371, guid: c648c4e920d4b0445b95a2cfe4864d56, type: 3}
+  background: {fileID: 6402253312958616736, guid: 78b43cc322709554db6cb9b3e0bc7fc1, type: 3}
