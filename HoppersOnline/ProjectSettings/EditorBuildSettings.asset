@@ -18,8 +18,11 @@ EditorBuildSettings:
     path: Assets/Scenes/LobbyScene.unity
     guid: 2500e044df5ab464b877610d1fa612b4
   - enabled: 1
-    path: Assets/Scenes/GameplayScene.unity
+    path: Assets/Scenes/SoloGameplayScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Scenes/MultiGameplayScene.unity
+    guid: 9b6dbcb0144775f4183cab1360cc9435
   - enabled: 1
     path: Assets/Scenes/CreditsScene.unity
     guid: 87ca93b254e155c4295c1d4fd28cd408

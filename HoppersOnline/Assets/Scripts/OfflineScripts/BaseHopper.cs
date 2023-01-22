@@ -234,7 +234,6 @@ public class BaseHopper : MonoBehaviour, IDamageable
     }
     #endregion
 
-    [ExecuteInEditMode]
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;

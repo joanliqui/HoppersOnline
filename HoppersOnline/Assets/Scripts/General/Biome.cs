@@ -7,6 +7,8 @@ using System;
 public class Biome : ScriptableObject
 {
     public BiomeObject[] zones;
+    public NetBiomeObject[] netZones;
     public BackgroundController background;
+    public NetBackgroundController netBackground;
 }
 

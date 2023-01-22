@@ -12,11 +12,6 @@ public class MapBuilder : MonoBehaviour
     [SerializeField] int nZonesToConnector = 4;
     [SerializeField] int maxZonesIn = 4;
 
-
-    public bool deleteZone;
-    public bool addZone;
-    public bool instantiateConectiorZone;
-
     //Bacground Related Variables
     private BackgroundController actualBG;
     private int orderInLayer = 0;

@@ -191,7 +191,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae0420536c0bc054da1f4911b38ccfaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameMode: 1
+  gameModeEnum: 0
 --- !u!4 &5707366
 Transform:
   m_ObjectHideFlags: 0
@@ -1897,6 +1897,7 @@ MonoBehaviour:
   holdersContent: {fileID: 1941493162}
   charactersList: {fileID: 11400000, guid: 0fb15f4c9bce81e48b54927727775377, type: 2}
   playButton: {fileID: 2075472364}
+  minimumPlayers: 1
 --- !u!1 &742043993
 GameObject:
   m_ObjectHideFlags: 0
@@ -2653,7 +2654,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1144643072}
-  - component: {fileID: 1144643071}
   - component: {fileID: 1144643073}
   - component: {fileID: 1144643074}
   m_Layer: 0
@@ -2663,24 +2663,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1144643071
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1144643070}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fdae1e843577a25458d8a80bee14762b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  roomInputField: {fileID: 322139303}
-  lobbyPanel: {fileID: 2270155}
-  roomPanel: {fileID: 742043993}
-  roomItemPrefab: {fileID: -2547881065114796693, guid: 1645a3a7973469a4c9824021135cffb3, type: 3}
-  contentObject: {fileID: 1787426544}
-  timeBtwUpdates: 1.5
 --- !u!4 &1144643072
 Transform:
   m_ObjectHideFlags: 0

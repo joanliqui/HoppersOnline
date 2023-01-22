@@ -42,6 +42,12 @@ MonoBehaviour:
   - SetPlayerInfoRPC
   - UpdatePlayerList
   - SetItemEmptyRPC
+  - GetRandiomBiomeRPC
+  - InitiateBackground
+  - SetRandomeBiomeRPC
+  - InstantiateZoneFromMasterRPC
+  - SetRandomBiomeRPC
+  - DetachBackground
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

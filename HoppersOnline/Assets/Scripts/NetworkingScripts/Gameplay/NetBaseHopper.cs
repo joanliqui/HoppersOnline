@@ -9,36 +9,44 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
 {
     //Input Variables
     private float hDir = 0;
-    private bool jumpBtn;
+    private bool isJumpPressed;
 
     [Header("Movement Settings")]
-    [SerializeField] protected float movSpeed = 1000;
+    [SerializeField] protected float movSpeed = 4000;
     [Tooltip("A multiplier to reduce the mov Speed on air")]
     [SerializeField] float airMovementMultiplier = 0.8f;
     [SerializeField] LayerMask groundLayer;
-    [SerializeField] float groundCheckDistance = 1;
-    private bool isFacingRight = true;
+    [SerializeField] float groundCheckDistance = 0.02f;
+
+    private bool _isFacingRight = true;
+    private bool _isGrounded;
     private Vector2 appliedMovement;
     private Vector2 currentMovement;
-    private bool isGrounded;
     private Vector2 posLeftRay;
     private Vector2 posRightRay;
 
-    [Header("Jump Settings")]
-    [SerializeField] float maxJumpHeight = 1f;
+    [Header("JumpVariables")]
     [SerializeField] float maxJumpTime = 0.5f;
-    [SerializeField] float jumpDistance = 2f;
-    private float initialJumpVelocity;
-    bool isJumping = false;
+    [SerializeField] float initialJumpVelocity = 7000;
+    [Range(0.0f, 1.0f)]
+    [SerializeField] float jumpCutMomentum = 0.2f;
+    private float cntTimeJumping;
+    private bool isJumping;
+    private bool isJumpCanceled = false;
 
-    [Header("Gravity Attributes")]
-    [SerializeField] protected float fastFallGravityMultiplier;
-    private float groundedGravity = -0.5f;
-    private float gravity = -9.8f;
+    //gravity variables
+    [SerializeField] float lowGravity = -9.8f;
+    [SerializeField] float hardGravity;
+
+    //Animator
+    private Animator anim;
+    private int hVelocityHashAnim;
+    private int isGroundedHashAnim;
+    private int vVelocityHashAnim;
 
     #region ComponentReferences
+    private PhotonView view;
     private Controls _inputs;
-    protected PhotonView view;
     private Rigidbody2D rb;
     private Collider2D col;
     #endregion
@@ -46,12 +54,18 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
     #region Enable/Disable
     private void OnEnable()
     {
-        _inputs.Enable();
+        if (view.IsMine)
+        {
+            _inputs.Enable();
+        }
     }
 
     private void OnDisable()
     {
-        _inputs.Disable();
+        if (view.IsMine)
+        {
+            _inputs.Disable();
+        }
     }
     #endregion
 
@@ -59,103 +73,67 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
     {
         _inputs = new Controls();
         rb = GetComponent<Rigidbody2D>();
-        view = GetComponent<PhotonView>();
         col = GetComponent<Collider2D>();
+        anim = GetComponentInChildren<Animator>();
+        view = GetComponent<PhotonView>();
 
-        _inputs.Player.Move.performed += ReadMovement;
-        _inputs.Player.Move.canceled += ReadMovement;
-        _inputs.Player.Jump.performed += ReadJump;
-        _inputs.Player.Jump.canceled += ReadJump;
+        hVelocityHashAnim = Animator.StringToHash("hVelocity");
+        isGroundedHashAnim = Animator.StringToHash("isGrounded");
+        vVelocityHashAnim = Animator.StringToHash("vVelocity");
+        
+        if (view.IsMine)
+        {
+            _inputs.Player.Move.performed += ReadMovement;
+            _inputs.Player.Move.canceled += ReadMovement;
+            _inputs.Player.Jump.started += ctx =>
+            {
+                isJumpCanceled = false;
+                ReadJump(ctx);
+            };
+            _inputs.Player.Jump.canceled += ctx =>
+            {
+                isJumpCanceled = true;
+                ReadJump(ctx);
+            };
+        }
+
     }
 
     private void Update()
     {
         if (view.IsMine)
         {
-            isGrounded = IsGrounded();
+            _isGrounded = IsGrounded();
 
-            if (isGrounded)
-            {
-                RunMovement();
-            }
+            HorizontalMovement();
 
             Gravity();
-            if (jumpBtn)
-            {
-                Jump();
-            }
+            Jump();
 
-            if (hDir > 0 && !isFacingRight) Flip();
-            else if (hDir < 0 && isFacingRight) Flip(); 
+            rb.velocity = appliedMovement * Time.deltaTime;
+
+            if (hDir > 0 && !_isFacingRight) Flip();
+            else if (hDir < 0 && _isFacingRight) Flip();
+
+            UpdateAnimations();
         }
     }
-
-    private void FixedUpdate()
+    private void HorizontalMovement()
     {
-        if (view.IsMine)
+        if (_isGrounded)
         {
-            rb.velocity = appliedMovement * Time.deltaTime ;
+            appliedMovement.x = hDir * movSpeed;
+        }
+        else
+        {
+            appliedMovement.x = hDir * movSpeed * airMovementMultiplier;
         }
     }
-
-    private void RunMovement()
-    {
-        appliedMovement.x = hDir * movSpeed;
-    }
-
 
     private void Flip()
     {
-        isFacingRight = !isFacingRight;
+        _isFacingRight = !_isFacingRight;
         transform.Rotate(0.0f, 180f, 0.0f);
-    }
-
-    protected void Gravity()
-    {
-        //EULER INTEGRATION: pues es la manera en la que he calculado la aceleracion toda la vida, pillas el valor, le sumas el de la aceleración, y lo metes en la
-        //funcion de movimiento para que se mueva, y ya esta.
-        //El frame rate puede hacer este salto inconsistente, y no saltar siempre de la misma manera, lo que puede llegar a ser frustrante
-
-        //VELOCITY VERLET INTEGRATION: guardamos la velocida anterior, calculamos la siguiente velocidad con el Euler Integration, y los sumamos los dos
-        //multiplicado por 0.5 y el Time Step
-        bool isFalling = currentMovement.y <= -0.01f || !jumpBtn;
-        if (isGrounded)
-        {
-            currentMovement.y = groundedGravity;
-            appliedMovement.y = groundedGravity;
-        }
-        else if (isFalling) // Cuando esta cayendo
-        {
-            float previousYVelocity = currentMovement.y;
-            currentMovement.y = currentMovement.y + (gravity * fastFallGravityMultiplier * Time.deltaTime);
-            appliedMovement.y = Mathf.Max((previousYVelocity + currentMovement.y) * 0.5f, -20f);
-        }
-        else // Cuando acaba de saltar y esta subiendo
-        {
-            float previousYVelocity = currentMovement.y;
-            currentMovement.y = currentMovement.y + (gravity * Time.deltaTime);
-            appliedMovement.y = (previousYVelocity + currentMovement.y) * 0.5f; //(en este caso el Time.deltaTime no lo pongo porque ya estan en el RB.velocity)
-        }
-    }
-    private void Jump()
-    {
-        if(!isJumping && isGrounded)
-        {
-            Debug.Log("Jump");
-            isJumping = true;
-            SetupJumpVariables();
-            appliedMovement.y = initialJumpVelocity;
-        }
-    }
-    private void SetupJumpVariables()
-    {
-        //En esta funcion calculamos la graviedad que ha de tener nuestro mundo y la velocidad inicial a la que ha de saltar el character para que
-        //concuerde con el tiempo y la altura de salto que nosotors decidimos
-        float distanceApex = jumpDistance / 2;
-        gravity = (-2 * maxJumpHeight * Mathf.Pow(movSpeed, 2)) / Mathf.Pow(distanceApex, 2);
-
-        initialJumpVelocity = (2 * maxJumpHeight * movSpeed) / distanceApex;
-        Debug.Log("initialJumpVelocity:" + initialJumpVelocity);
     }
     private bool IsGrounded()
     {
@@ -179,30 +157,106 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
         }
     }
 
+    private void Gravity()
+    {
+        if (!isJumping && _isGrounded)
+        {
+            currentMovement.y = -0.1f;
+            appliedMovement.y = -0.1f;
+        }
+        else if (isJumping && !_isGrounded)
+        {
+            if (appliedMovement.y > 0)
+            {
+                appliedMovement.y += lowGravity * Time.deltaTime;
+            }
+            else //Apex
+            {
+                appliedMovement.y += hardGravity;
+            }
+        }
+        else if (!isJumping && !_isGrounded) //Cayendo
+        {
+            appliedMovement.y += hardGravity;
+        }
+        else if (isJumping && !_isGrounded)
+        {
+            Debug.Log("Pa tocar los huevos");
+        }
+    }
+    private void Jump()
+    {
+        if (isJumpPressed)
+        {
+            if (!isJumping && _isGrounded)
+            {
+                cntTimeJumping = 0;
+                appliedMovement.y = initialJumpVelocity;
+                isJumping = true;
+            }
+            else if (isJumping)
+            {
+                if (cntTimeJumping < maxJumpTime)
+                {
+                    cntTimeJumping += Time.deltaTime;
+                    appliedMovement.y = initialJumpVelocity;
+                }
+                else
+                {
+                    CutJumpOnCancelOrApex();
+                    isJumpPressed = false;
+                }
+            }
+        }
+        if (isJumpCanceled && isJumping)
+        {
+            CutJumpOnCancelOrApex();
+            isJumpCanceled = false;
+        }
+    }
+    private void CutJumpOnCancelOrApex()
+    {
+        appliedMovement.y = appliedMovement.y * jumpCutMomentum;
+        isJumping = false;
+        Debug.Log("Cuted");
+    }
+
     #region ReadInput
     private void ReadMovement(InputAction.CallbackContext ctx)
     {
-        if (view.IsMine)
-        {
-            hDir = ctx.ReadValue<float>();
-        }
+        hDir = ctx.ReadValue<float>();
     }
 
     private void ReadJump(InputAction.CallbackContext ctx)
     {
-        jumpBtn = ctx.ReadValueAsButton();
+        isJumpPressed = ctx.ReadValueAsButton();
     }
+
     #endregion
 
-    #region Interfaces
+    #region INTERFACES
     public void Damaged()
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public void Damaged(Vector2 dir, float impulseForce)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
     #endregion
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(posLeftRay, new Vector2(posLeftRay.x, posLeftRay.y - groundCheckDistance));
+        Gizmos.DrawLine(posRightRay, new Vector2(posRightRay.x, posRightRay.y - groundCheckDistance));
+    }
+
+    private void UpdateAnimations()
+    {
+        anim.SetBool(isGroundedHashAnim, _isGrounded);
+        anim.SetFloat(hVelocityHashAnim, Mathf.Abs(rb.velocity.x));
+        anim.SetFloat(vVelocityHashAnim, rb.velocity.y);
+    }
 }

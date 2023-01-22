@@ -19,6 +19,7 @@ public class MultiSelectionManager : MonoBehaviourPunCallbacks
 
     [Header("StartGame")]
     [SerializeField] GameObject playButton;
+    [SerializeField] int minimumPlayers = 1;
     //PLAYER PROPERTIES
     ExitGames.Client.Photon.Hashtable playerProperties = new ExitGames.Client.Photon.Hashtable();
 
@@ -177,7 +178,7 @@ public class MultiSelectionManager : MonoBehaviourPunCallbacks
     /// </summary>
     public void ShowPlayButton()
     {
-        if(PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount > 1)
+        if(PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount >= minimumPlayers)
         {
             int playersInRoom = PhotonNetwork.CurrentRoom.PlayerCount;
             int n = 0;
@@ -202,6 +203,6 @@ public class MultiSelectionManager : MonoBehaviourPunCallbacks
 
     public void OnClickPlayButton()
     {
-        PhotonNetwork.LoadLevel("GameplayScene");
+        PhotonNetwork.LoadLevel("MultiGameplayScene");
     }
 }
