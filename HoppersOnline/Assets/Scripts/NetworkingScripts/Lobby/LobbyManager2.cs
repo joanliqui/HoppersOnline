@@ -69,12 +69,39 @@ public class LobbyManager2 : MonoBehaviourPunCallbacks
         PhotonNetwork.JoinRoom(joinInputField.text);
     }
 
+    #region FAILS
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        roomInputField.text = string.Empty;
+        string m = "";
+        switch (returnCode)
+        {
+            case 32766: // GameAlreadyExists
+                m = "La sala " + joinInputField.text + " ya existe";
+                break;
+        }
+
+        Debug.Log(returnCode + " ----- " + message);
+        errorPanel.DisplayMessage(m);
+    }
+
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
         joinInputField.text = string.Empty;
-        errorPanel.DisplayMessage("La sala " + joinInputField.text + " no existe");
+        string m = "";
+        switch (returnCode)
+        {
+            case 32765: //JOINAL - GameFull 
+                m = "La sala " + joinInputField.text + " esta llena";
+                break;
+            case 32758: //JOINAL - GameDoesNotExist 
+                m = "La sala " + joinInputField.text + " no existe";
+                break;
+        }
+        Debug.Log(returnCode + " ----- " + message);
+        errorPanel.DisplayMessage(m);
     }
-
+    #endregion
     public override void OnJoinedRoom()
     {
         joinInputField.text = string.Empty;
