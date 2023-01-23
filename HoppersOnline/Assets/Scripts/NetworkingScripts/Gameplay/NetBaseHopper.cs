@@ -7,9 +7,11 @@ using Photon.Pun;
 
 public class NetBaseHopper : MonoBehaviour, IDamageable
 {
+    private bool isPaused = false;
     //Input Variables
     private float hDir = 0;
     private bool isJumpPressed;
+    private bool pausedPressed;
 
     [Header("Movement Settings")]
     [SerializeField] protected float movSpeed = 4000;
@@ -44,11 +46,17 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
     private int isGroundedHashAnim;
     private int vVelocityHashAnim;
 
+    //Pause
+    public delegate void PausePerformed();
+    public event PausePerformed OnPausePerformed;
+
     #region ComponentReferences
     private PhotonView view;
     private Controls _inputs;
     private Rigidbody2D rb;
     private Collider2D col;
+
+    public PhotonView View { get => view;}
     #endregion
 
     #region Enable/Disable
@@ -83,6 +91,8 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
         
         if (view.IsMine)
         {
+            OnPausePerformed += ToggleInputMap;
+
             _inputs.Player.Move.performed += ReadMovement;
             _inputs.Player.Move.canceled += ReadMovement;
             _inputs.Player.Jump.started += ctx =>
@@ -95,6 +105,17 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
                 isJumpCanceled = true;
                 ReadJump(ctx);
             };
+
+            _inputs.Player.Pause.started += ctx =>
+            {
+                pausedPressed = true;
+                OnPausePerformed?.Invoke();
+            };
+            _inputs.Player.Pause.canceled += ctx =>
+            {
+                pausedPressed = true;
+            };
+
         }
 
     }
@@ -259,4 +280,33 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
         anim.SetFloat(hVelocityHashAnim, Mathf.Abs(rb.velocity.x));
         anim.SetFloat(vVelocityHashAnim, rb.velocity.y);
     }
+
+    public void ToggleInputMap()
+    {
+        view.RPC("ToggleInputMapRPC", RpcTarget.All);
+    }
+
+    [PunRPC]
+    private void ToggleInputMapRPC()
+    {
+        if (view.IsMine)
+        {
+            isPaused = !isPaused;
+
+            if (isPaused)
+            {
+                _inputs.Player.Move.Disable();
+                _inputs.Player.Jump.Disable();
+                _inputs.Player.Ability.Disable();
+            }
+            else
+            {
+                _inputs.Player.Move.Enable();
+                _inputs.Player.Jump.Enable();
+                _inputs.Player.Ability.Enable();
+            }
+        }
+    }
+   
+
 }

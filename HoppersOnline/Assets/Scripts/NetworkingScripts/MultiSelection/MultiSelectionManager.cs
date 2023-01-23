@@ -8,6 +8,8 @@ using System;
 
 public class MultiSelectionManager : MonoBehaviourPunCallbacks
 {
+    public int playerNumber = 1;
+
     [SerializeField] TextMeshProUGUI roomNameDisplay;
     [SerializeField] PlayerItem[] playerItems;
 
@@ -53,7 +55,8 @@ public class MultiSelectionManager : MonoBehaviourPunCallbacks
     public void InicializePlayerProperties()
     {
         playerProperties["playerAvatar"] = -1;
-        playerProperties["playerNumber"] = (int)PhotonNetwork.CurrentRoom.PlayerCount;
+        playerProperties["playerNumber"] = playerNumber;
+        playerNumber++;
         PhotonNetwork.SetPlayerCustomProperties(playerProperties);
     }
     public void OnExitRoomClick()

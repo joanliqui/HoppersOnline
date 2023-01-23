@@ -13,6 +13,7 @@ public class LobbyManager2 : MonoBehaviourPunCallbacks
     [SerializeField] TMP_InputField joinInputField;
     [SerializeField] GameObject lobbyPanel;
     [SerializeField] GameObject roomPanel;
+    [SerializeField] ErrorDisplayer errorPanel;
 
     MultiSelectionManager selectionManager;
 
@@ -25,8 +26,18 @@ public class LobbyManager2 : MonoBehaviourPunCallbacks
         cts = GetComponent<ConnectToServer>();
 
         if (!PhotonNetwork.IsConnected)
+        { 
             cts.ConnectServer();
-        else Debug.Log("Ya estas conectado a un servidor");
+        }
+        else
+        {
+            if (PhotonNetwork.InRoom) //En este caso venimos de la escena de gameplay
+            {
+                lobbyPanel.SetActive(false);
+                roomPanel.SetActive(true);
+                selectionManager.OnEnterRoom();
+            }
+        }
     }
 
     public override void OnJoinedLobby()
@@ -61,8 +72,7 @@ public class LobbyManager2 : MonoBehaviourPunCallbacks
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
         joinInputField.text = string.Empty;
-        Debug.LogError("No has podido entrar a la room");
-        Debug.LogError(message + " ----ReturnCode:" + returnCode);
+        errorPanel.DisplayMessage("La sala " + joinInputField.text + " no existe");
     }
 
     public override void OnJoinedRoom()

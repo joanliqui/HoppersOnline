@@ -8,6 +8,7 @@ public class BaseHopper : MonoBehaviour, IDamageable
     //Input Variables
     private float hDir = 0;
     private bool isJumpPressed;
+    private bool pausePressed;
 
     [Header("Movement Settings")]
     [SerializeField] protected float movSpeed = 1000;
