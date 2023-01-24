@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.SceneManagement;
 
 public class NetPauseManager : MonoBehaviour
 {
@@ -77,6 +78,19 @@ public class NetPauseManager : MonoBehaviour
     public void OnMainMenuPressed()
     {
         Time.timeScale = 1f;
-        PhotonNetwork.LoadLevel("LobbyScene");
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.LoadLevel("LobbyScene");
+        }
+        else
+        {
+            view.RPC("LoadLobbyScene", RpcTarget.All);
+        }
+    }
+
+    [PunRPC]
+    private void LoadLobbyScene()
+    {
+        SceneManager.LoadScene("LobbyScene");
     }
 }

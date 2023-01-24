@@ -1849,6 +1849,7 @@ GameObject:
   m_Component:
   - component: {fileID: 683736900}
   - component: {fileID: 683736901}
+  - component: {fileID: 683736902}
   m_Layer: 5
   m_Name: SelectionManager
   m_TagString: SelectionManager
@@ -1888,7 +1889,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed0f1168388f71248bd4711414b6b4de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerNumber: 1
   roomNameDisplay: {fileID: 463022835}
   playerItems:
   - {fileID: 889923718}
@@ -1900,6 +1900,28 @@ MonoBehaviour:
   charactersList: {fileID: 11400000, guid: 0fb15f4c9bce81e48b54927727775377, type: 2}
   playButton: {fileID: 2075472364}
   minimumPlayers: 1
+--- !u!114 &683736902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683736899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 5
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &742043993
 GameObject:
   m_ObjectHideFlags: 0

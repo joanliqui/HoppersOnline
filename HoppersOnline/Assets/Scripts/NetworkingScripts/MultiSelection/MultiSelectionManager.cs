@@ -9,6 +9,8 @@ using System;
 public class MultiSelectionManager : MonoBehaviourPunCallbacks
 {
     public int playerNumber = 1;
+    PhotonView view;
+    private bool afterFirstPropertyUpdate;
 
     [SerializeField] TextMeshProUGUI roomNameDisplay;
     [SerializeField] PlayerItem[] playerItems;
@@ -25,15 +27,35 @@ public class MultiSelectionManager : MonoBehaviourPunCallbacks
     //PLAYER PROPERTIES
     ExitGames.Client.Photon.Hashtable playerProperties = new ExitGames.Client.Photon.Hashtable();
 
+    private void Start()
+    {
+        view = GetComponent<PhotonView>();
+    }
+
     //Se llama desde OnJoinedRoom callback en el LobbyManager 
+    /// <summary>
+    /// Setea la Room y llama a la InicializePlayerProperties()
+    /// </summary>
     public void OnEnterRoom()
     {
         roomNameDisplay.text = PhotonNetwork.CurrentRoom.Name;
         selected = false;
+        afterFirstPropertyUpdate = false;
+
         SetCharacterHolders();
 
         InicializePlayerProperties();
-        UpdatePlayerList();
+    }
+
+    /// <summary>
+    /// Limpia los PlayerItems del LOCAL; solo del Local
+    /// </summary>
+    public void OnLeaveRoom()
+    {
+        foreach (PlayerItem item in playerItems)
+        {
+            item.ClearItem();
+        }
     }
 
     private void SetCharacterHolders()
@@ -52,26 +74,71 @@ public class MultiSelectionManager : MonoBehaviourPunCallbacks
             newHolder.onPointerExit += OnCharacterPointerExited;
         }
     }
+  
+    /// <summary>
+    /// Inicializa las propiedades del Player y llama al UpdateCustomProperties 
+    /// </summary>
     public void InicializePlayerProperties()
     {
         playerProperties["playerAvatar"] = -1;
-        playerProperties["playerNumber"] = playerNumber;
-        playerNumber++;
+        if (!PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("playerNumber"))
+        {
+            playerProperties["playerNumber"] = (int)PhotonNetwork.CurrentRoom.PlayerCount;
+            Debug.Log("Seted player number to:" + playerProperties["playerNumber"].ToString());
+        }
+        PhotonNetwork.LocalPlayer.CustomProperties = playerProperties;
         PhotonNetwork.SetPlayerCustomProperties(playerProperties);
     }
     public void OnExitRoomClick()
     {
         PhotonNetwork.LeaveRoom();
-    }   
-   
+    }
+
+    public void NewUpdatePlayerList()
+    {
+        if (PhotonNetwork.CurrentRoom == null) return;
+
+        Debug.Log("newwwwww");
+        int n = 0;
+        foreach (KeyValuePair<int, Player> player in PhotonNetwork.CurrentRoom.Players)
+        {
+            playerItems[n].ActivateItem();
+            playerItems[n].SetPlayerInfo(player.Value);
+
+            if (playerItems[n].MyPlayer.CustomProperties.ContainsKey("playerAvatar"))
+            {
+                if ((int)playerItems[n].MyPlayer.CustomProperties["playerAvatar"] != -1)
+                {
+                    Debug.Log(playerItems[n].MyPlayer.CustomProperties["playerAvatar"]);
+                    playerItems[n].SelectedCharacter(charactersList.charactersList[(int)player.Value.CustomProperties["playerAvatar"]].characterSprite);
+                }
+            }
+
+            if(playerItems[n].MyPlayer == PhotonNetwork.LocalPlayer)
+            {
+                playerItems[n].ApplyLocalChanges();
+            }
+            n++;
+        }
+
+        for (int i = n; i < playerItems.Length; i++)
+        {
+            playerItems[n].ClearItem();
+            n++;
+        }
+    }
+
     public void UpdatePlayerList()
     {
         if (PhotonNetwork.CurrentRoom == null) return;
 
-        Debug.Log("UpdatePlayerList Method");
+        
         foreach(PlayerItem item in playerItems)
         {
-            item.ClearItem();
+            if(item.MyPlayer == null)
+            {
+                item.ClearItem();
+            }
         }
 
         int n = 0;
@@ -93,15 +160,16 @@ public class MultiSelectionManager : MonoBehaviourPunCallbacks
         }
     }
   
-    public override void OnPlayerEnteredRoom(Player newPlayer)
-    {
-        UpdatePlayerList();
-    }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        Debug.Log("Player left the room");
-        UpdatePlayerList();
+        foreach (PlayerItem item in playerItems)
+        {
+            if(item.MyPlayer == otherPlayer)
+            {
+                item.ClearItem();
+            }
+        }
     }
 
     //Setea la propiedad del sprite escogido a traves del network
@@ -151,10 +219,16 @@ public class MultiSelectionManager : MonoBehaviourPunCallbacks
     {
         UpdatePlayerPropertiesOverNetwork(targetPlayer);
         ShowPlayButton();
+       
+        NewUpdatePlayerList();
+        afterFirstPropertyUpdate = true;
+        
     }
 
     private void UpdatePlayerPropertiesOverNetwork(Player p)
     {
+        if (!PhotonNetwork.InRoom) return;
+
         foreach (PlayerItem item in playerItems)
         {
             if (item.MyPlayer == p)

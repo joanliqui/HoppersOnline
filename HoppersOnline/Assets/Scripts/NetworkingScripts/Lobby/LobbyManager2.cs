@@ -21,6 +21,7 @@ public class LobbyManager2 : MonoBehaviourPunCallbacks
     {
         lobbyPanel.SetActive(false);
         roomPanel.SetActive(false);
+        Time.timeScale = 1f;
 
         selectionManager = GameObject.FindGameObjectWithTag("SelectionManager").GetComponent<MultiSelectionManager>();
         cts = GetComponent<ConnectToServer>();
@@ -116,6 +117,7 @@ public class LobbyManager2 : MonoBehaviourPunCallbacks
     {
         lobbyPanel.SetActive(true);
         roomPanel.SetActive(false);
-        selectionManager.UpdatePlayerList();
+
+        selectionManager.OnLeaveRoom();
     }
 }
