@@ -34,8 +34,10 @@ public class LobbyManager2 : MonoBehaviourPunCallbacks
         {
             if (PhotonNetwork.InRoom) //En este caso venimos de la escena de gameplay
             {
+                Debug.Log("Vienes del gameplay");
                 lobbyPanel.SetActive(false);
                 roomPanel.SetActive(true);
+
                 selectionManager.OnEnterRoom();
             }
         }
@@ -43,7 +45,6 @@ public class LobbyManager2 : MonoBehaviourPunCallbacks
 
     public override void OnJoinedLobby()
     {
-        Debug.Log("OnJoinedLobby Callback");
         lobbyPanel.SetActive(true);
     }
 

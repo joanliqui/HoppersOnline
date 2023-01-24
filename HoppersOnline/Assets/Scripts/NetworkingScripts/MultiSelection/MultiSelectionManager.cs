@@ -26,6 +26,7 @@ public class MultiSelectionManager : MonoBehaviourPunCallbacks
     [SerializeField] int minimumPlayers = 1;
     //PLAYER PROPERTIES
     ExitGames.Client.Photon.Hashtable playerProperties = new ExitGames.Client.Photon.Hashtable();
+    ExitGames.Client.Photon.Hashtable roomProperties = new ExitGames.Client.Photon.Hashtable();
 
     private void Start()
     {
@@ -43,8 +44,10 @@ public class MultiSelectionManager : MonoBehaviourPunCallbacks
         afterFirstPropertyUpdate = false;
 
         SetCharacterHolders();
+        InicializeRoomProperties();
 
         InicializePlayerProperties();
+        
     }
 
     /// <summary>
@@ -81,13 +84,27 @@ public class MultiSelectionManager : MonoBehaviourPunCallbacks
     public void InicializePlayerProperties()
     {
         playerProperties["playerAvatar"] = -1;
+
         if (!PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("playerNumber"))
         {
             playerProperties["playerNumber"] = (int)PhotonNetwork.CurrentRoom.PlayerCount;
-            Debug.Log("Seted player number to:" + playerProperties["playerNumber"].ToString());
         }
-        PhotonNetwork.LocalPlayer.CustomProperties = playerProperties;
+        else
+        {
+            playerProperties["playerNumber"] = (int)PhotonNetwork.LocalPlayer.CustomProperties["playerNumber"];
+        }
+
         PhotonNetwork.SetPlayerCustomProperties(playerProperties);
+   
+    }
+
+    private void InicializeRoomProperties()
+    {
+        if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("cntPlayers"))
+        {
+            roomProperties["cntPlayers"] = 0;
+            PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
+        }
     }
     public void OnExitRoomClick()
     {
@@ -98,7 +115,6 @@ public class MultiSelectionManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.CurrentRoom == null) return;
 
-        Debug.Log("newwwwww");
         int n = 0;
         foreach (KeyValuePair<int, Player> player in PhotonNetwork.CurrentRoom.Players)
         {
@@ -109,8 +125,7 @@ public class MultiSelectionManager : MonoBehaviourPunCallbacks
             {
                 if ((int)playerItems[n].MyPlayer.CustomProperties["playerAvatar"] != -1)
                 {
-                    Debug.Log(playerItems[n].MyPlayer.CustomProperties["playerAvatar"]);
-                    playerItems[n].SelectedCharacter(charactersList.charactersList[(int)player.Value.CustomProperties["playerAvatar"]].characterSprite);
+                    playerItems[n].SelectedCharacter(charactersList.charactersList[(int)player.Value.CustomProperties["playerAvatar"]].characterSprite); //Creo que aqui esta el bug
                 }
             }
 
@@ -238,6 +253,10 @@ public class MultiSelectionManager : MonoBehaviourPunCallbacks
                     if((int)p.CustomProperties["playerAvatar"] != -1)
                     {
                         item.SelectedCharacter(charactersList.charactersList[(int)p.CustomProperties["playerAvatar"]].characterSprite);
+                    }
+                    else
+                    {
+                        item.DeleteCharacterSprite();
                     }
                 }
                 return;

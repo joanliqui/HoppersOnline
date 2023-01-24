@@ -66,5 +66,10 @@ public class PlayerItem : MonoBehaviour
         bg.color = pointedColor;
     }
 
+    public void DeleteCharacterSprite()
+    {
+        bg.sprite = initialSprite;
+    }
+
 
 }
