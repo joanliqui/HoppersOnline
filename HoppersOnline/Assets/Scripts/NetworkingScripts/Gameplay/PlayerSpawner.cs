@@ -26,7 +26,7 @@ public class PlayerSpawner : MonoBehaviour
 
                 if(PhotonNetwork.CurrentRoom != null)
                 {
-                    Debug.LogError(PhotonNetwork.LocalPlayer.CustomProperties["playerNumber"]);
+                    Debug.LogError("My PlayerNumber: " + PhotonNetwork.LocalPlayer.CustomProperties["playerNumber"]);
                     Transform spawnPoint = spawnPoints[(int)PhotonNetwork.LocalPlayer.CustomProperties["playerNumber"] - 1];
                     GameObject playerToSpawn = listSO.charactersList[(int)PhotonNetwork.LocalPlayer.CustomProperties["playerAvatar"]].GetCharacterPrefab(true);
                     PhotonNetwork.Instantiate(playerToSpawn.name, spawnPoint.position, Quaternion.identity);

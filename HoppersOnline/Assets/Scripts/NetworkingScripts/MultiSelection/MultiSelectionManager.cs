@@ -50,6 +50,11 @@ public class MultiSelectionManager : MonoBehaviourPunCallbacks
         
     }
 
+    public void DeletePlayerNumberCauseRoomDisconection()
+    {
+        playerProperties.Remove("playerNumber");
+    }
+
     /// <summary>
     /// Limpia los PlayerItems del LOCAL; solo del Local
     /// </summary>
@@ -84,18 +89,9 @@ public class MultiSelectionManager : MonoBehaviourPunCallbacks
     public void InicializePlayerProperties()
     {
         playerProperties["playerAvatar"] = -1;
-
-        if (!PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("playerNumber"))
-        {
-            playerProperties["playerNumber"] = (int)PhotonNetwork.CurrentRoom.PlayerCount;
-        }
-        else
-        {
-            playerProperties["playerNumber"] = (int)PhotonNetwork.LocalPlayer.CustomProperties["playerNumber"];
-        }
+        playerProperties["playerNumber"] = (int)PhotonNetwork.CurrentRoom.PlayerCount;
 
         PhotonNetwork.SetPlayerCustomProperties(playerProperties);
-   
     }
 
     private void InicializeRoomProperties()
@@ -239,7 +235,6 @@ public class MultiSelectionManager : MonoBehaviourPunCallbacks
         afterFirstPropertyUpdate = true;
         
     }
-
     private void UpdatePlayerPropertiesOverNetwork(Player p)
     {
         if (!PhotonNetwork.InRoom) return;

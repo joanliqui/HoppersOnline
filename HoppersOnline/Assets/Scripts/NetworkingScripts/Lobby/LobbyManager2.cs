@@ -32,13 +32,17 @@ public class LobbyManager2 : MonoBehaviourPunCallbacks
         }
         else
         {
-            if (PhotonNetwork.InRoom) //En este caso venimos de la escena de gameplay
+            if (PhotonNetwork.InRoom) //En este caso venimos de la escena de gameplay tras darle al boton de salir;
             {
-                Debug.Log("Vienes del gameplay");
                 lobbyPanel.SetActive(false);
                 roomPanel.SetActive(true);
 
                 selectionManager.OnEnterRoom();
+            }
+            else
+            {
+                lobbyPanel.SetActive(true);
+                roomPanel.SetActive(false);
             }
         }
     }

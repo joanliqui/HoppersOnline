@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 697411296745146557}
   - component: {fileID: 697411296745146556}
   - component: {fileID: 697411296745146559}
+  - component: {fileID: 1905498546}
   m_Layer: 0
   m_Name: BubbleGumGFX
   m_TagString: Untagged
@@ -72,7 +73,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1706080647
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: 1890305667, guid: cbaa393f5597e5a4eb5a717b6b15d110, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -105,6 +106,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1905498546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 697411296745146530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5995d8a6859270245903483afc593fcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &697411297561913766
 GameObject:
   m_ObjectHideFlags: 0
@@ -116,7 +129,7 @@ GameObject:
   - component: {fileID: 697411297561913760}
   - component: {fileID: 445512074399114375}
   - component: {fileID: 7242705517159394772}
-  - component: {fileID: 697411297561913763}
+  - component: {fileID: 5823232996919667207}
   m_Layer: 0
   m_Name: BubbleGumSolo
   m_TagString: Untagged
@@ -187,7 +200,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.12, y: 2.67}
   m_EdgeRadius: 0
---- !u!114 &697411297561913763
+--- !u!114 &5823232996919667207
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -196,7 +209,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 697411297561913766}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 004d7c71d8ece9b4983dd048fb04af60, type: 3}
+  m_Script: {fileID: 11500000, guid: 6f87cc9fbc82a164181e39dadb70a80e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   movSpeed: 4000
@@ -206,7 +219,11 @@ MonoBehaviour:
     m_Bits: 64
   groundCheckDistance: 0.2
   maxJumpTime: 0.25
-  initialJumpVelocity: 8000
+  initialJumpVelocity: 6500
   jumpCutMomentum: 0.2
   lowGravity: -20
   hardGravity: -100
+  initialUltimateVelocity: 7000
+  OnUltimatePerformed:
+    m_PersistentCalls:
+      m_Calls: []

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 651501465958959271}
   - component: {fileID: 5081737949620826354}
   - component: {fileID: 4013616242829224846}
-  - component: {fileID: 6804445288995471257}
+  - component: {fileID: 1381763667}
   m_Layer: 0
   m_Name: TalysSolo
   m_TagString: Untagged
@@ -82,7 +82,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.12, y: 2.4}
   m_EdgeRadius: 0
---- !u!114 &6804445288995471257
+--- !u!114 &1381763667
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -91,7 +91,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6804445288995471258}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 004d7c71d8ece9b4983dd048fb04af60, type: 3}
+  m_Script: {fileID: 11500000, guid: da8e4da6484769e418a640edb487502e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   movSpeed: 4000
@@ -99,12 +99,14 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  groundCheckDistance: 0.2
+  groundCheckDistance: 0.02
   maxJumpTime: 0.25
-  initialJumpVelocity: 8000
+  initialJumpVelocity: 7000
   jumpCutMomentum: 0.2
   lowGravity: -20
   hardGravity: -100
+  meteorPrefab: {fileID: 7837195382680282400, guid: e9ba04bbafb3ef347bf984b5b48b6cfa, type: 3}
+  nMeteors: 4
 --- !u!1 &8114090849327944510
 GameObject:
   m_ObjectHideFlags: 0
@@ -116,6 +118,7 @@ GameObject:
   - component: {fileID: 546780351918544156}
   - component: {fileID: 4721640660511924766}
   - component: {fileID: 4013616243394620487}
+  - component: {fileID: 5283987022210006119}
   m_Layer: 0
   m_Name: TalysGFX
   m_TagString: Untagged
@@ -177,7 +180,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1706080647
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: 1382332962, guid: 1dea3ee0881b5b14085f70f8d1ee4d58, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -210,3 +213,15 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &5283987022210006119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8114090849327944510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5995d8a6859270245903483afc593fcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

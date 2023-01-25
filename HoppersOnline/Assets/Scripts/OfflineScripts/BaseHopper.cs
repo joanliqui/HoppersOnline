@@ -6,27 +6,27 @@ using UnityEngine.InputSystem;
 public class BaseHopper : MonoBehaviour, IDamageable
 {
     //Input Variables
-    private float hDir = 0;
-    private bool isJumpPressed;
-    private bool pausePressed;
+    protected float hDir = 0;
+    protected bool isJumpPressed;
+    protected bool pausePressed;
 
     [Header("Movement Settings")]
     [SerializeField] protected float movSpeed = 1000;
     [Tooltip("A multiplier to reduce the mov Speed on air")]
-    [SerializeField] float airMovementMultiplier = 0.8f;
+    [SerializeField] protected float airMovementMultiplier = 0.8f;
     [SerializeField] LayerMask groundLayer;
     [SerializeField] float groundCheckDistance = 0.02f;
 
-    private bool _isFacingRight = true;
-    private bool _isGrounded;
-    private Vector2 appliedMovement;
-    private Vector2 currentMovement;
+    protected bool _isFacingRight = true;
+    protected bool _isGrounded;
+    protected Vector2 appliedMovement;
+    protected Vector2 currentMovement;
     private Vector2 posLeftRay;
     private Vector2 posRightRay;
 
     [Header("JumpVariables")] 
     [SerializeField] float maxJumpTime = 0.5f;
-    [SerializeField] float initialJumpVelocity;
+    [SerializeField] float initialJumpVelocity = 7000f;
     [Range(0.0f, 1.0f)]
     [SerializeField] float jumpCutMomentum = 0.2f;
     private float cntTimeJumping;
@@ -34,14 +34,19 @@ public class BaseHopper : MonoBehaviour, IDamageable
     private bool isJumpCanceled = false;
 
     //gravity variables
-    [SerializeField] float lowGravity = -9.8f;
-    [SerializeField] float hardGravity;
+    [SerializeField] float lowGravity = -20f;
+    [SerializeField] float hardGravity = -100f;
+
+    //Abilitie Variables;
+    protected bool canUlt = true;
+    protected bool isUlting = false;
 
     //Animator
     private Animator anim;
     private int hVelocityHashAnim;
     private int isGroundedHashAnim;
     private int vVelocityHashAnim;
+    private int isUltingHashAnim;
 
     #region ComponentReferences
     private Controls _inputs;
@@ -71,6 +76,7 @@ public class BaseHopper : MonoBehaviour, IDamageable
         hVelocityHashAnim = Animator.StringToHash("hVelocity");
         isGroundedHashAnim = Animator.StringToHash("isGrounded");
         vVelocityHashAnim = Animator.StringToHash("vVelocity");
+        isUltingHashAnim = Animator.StringToHash("isUlting");
 
         _inputs.Player.Move.performed += ReadMovement;
         _inputs.Player.Move.canceled += ReadMovement;
@@ -84,6 +90,8 @@ public class BaseHopper : MonoBehaviour, IDamageable
             isJumpCanceled = true;
             ReadJump(ctx);
         };
+
+        _inputs.Player.Ability.started += Abilitie;
 
     }
 
@@ -104,9 +112,7 @@ public class BaseHopper : MonoBehaviour, IDamageable
         UpdateAnimations();
     }
 
-   
-
-    private void HorizontalMovement()
+    protected virtual void HorizontalMovement()
     {
         if (_isGrounded)
         {
@@ -118,7 +124,7 @@ public class BaseHopper : MonoBehaviour, IDamageable
         }
     }
 
-    private void Gravity()
+    protected virtual void Gravity()
     {
         if(!isJumping && _isGrounded)
         {
@@ -145,7 +151,6 @@ public class BaseHopper : MonoBehaviour, IDamageable
             Debug.Log("Pa tocar los huevos");
         }
     }
-
     private void Flip()
     {
         _isFacingRight = !_isFacingRight;
@@ -210,6 +215,7 @@ public class BaseHopper : MonoBehaviour, IDamageable
         isJumping = false;
         Debug.Log("Cuted");
     }
+
     #region ReadInput
     private void ReadMovement(InputAction.CallbackContext ctx)
     {
@@ -247,5 +253,23 @@ public class BaseHopper : MonoBehaviour, IDamageable
         anim.SetBool(isGroundedHashAnim, _isGrounded);
         anim.SetFloat(hVelocityHashAnim, Mathf.Abs(rb.velocity.x));
         anim.SetFloat(vVelocityHashAnim, rb.velocity.y);
+        anim.SetBool(isUltingHashAnim, isUlting);
+    }
+
+    protected virtual void Abilitie(InputAction.CallbackContext ctx)
+    {
+
+    }
+
+    protected IEnumerator DisableInputCoroutine(float sec)
+    {
+        _inputs.Player.Disable();
+        yield return new WaitForSeconds(sec);
+        _inputs.Player.Enable();
+    }
+
+    public virtual void EndUltimate()
+    {
+
     }
 }

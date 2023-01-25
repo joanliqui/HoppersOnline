@@ -27,7 +27,6 @@ public class NetBackgroundController : MonoBehaviour
         gameObject.transform.SetParent(parent);
         gameObject.transform.localPosition = new Vector3(0.0f, 0.0f, 15f);
         sr.sortingOrder = orderInLayer;
-        Debug.Log(orderInLayer);
     }
 
     public void InitiateBackgroundRPC(Transform p, int ord)
