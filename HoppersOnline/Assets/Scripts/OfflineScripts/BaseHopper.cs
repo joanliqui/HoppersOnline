@@ -30,7 +30,7 @@ public class BaseHopper : MonoBehaviour, IDamageable
     [Range(0.0f, 1.0f)]
     [SerializeField] float jumpCutMomentum = 0.2f;
     private float cntTimeJumping;
-    private bool isJumping;
+    protected bool isJumping;
     private bool isJumpCanceled = false;
 
     //gravity variables
@@ -88,6 +88,11 @@ public class BaseHopper : MonoBehaviour, IDamageable
         _inputs.Player.Jump.canceled += ctx => 
         {
             isJumpCanceled = true;
+            if (isJumping)
+            {
+                CutJumpOnCancelOrApex();
+            }
+
             ReadJump(ctx);
         };
 
@@ -202,11 +207,11 @@ public class BaseHopper : MonoBehaviour, IDamageable
                 }
             }
         }
-        if (isJumpCanceled && isJumping)
-        {
-            CutJumpOnCancelOrApex();
-            isJumpCanceled = false;
-        }
+        //if (isJumpCanceled && isJumping)
+        //{
+        //    CutJumpOnCancelOrApex();
+        //    isJumpCanceled = false;
+        //}
     }
 
     private void CutJumpOnCancelOrApex()

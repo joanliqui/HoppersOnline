@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using Photon.Pun;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
-public class BubbleGum : BaseHopper
+public class NetBubbleGum : NetBaseHopper
 {
+
     [Space(10)]
     [Header("BubbleGumVariables")]
     [SerializeField] float initialUltimateVelocity;
@@ -17,7 +19,6 @@ public class BubbleGum : BaseHopper
         {
             isUlting = true;
             isJumping = false;
-
             ImpulseUp();
             StartCoroutine(DisableInputCoroutine(0.1f));
             //StartCoroutine(ReturnGravity());
@@ -30,7 +31,7 @@ public class BubbleGum : BaseHopper
 
     private void ImpulseUp()
     {
-        appliedMovement.y = initialUltimateVelocity; 
+        appliedMovement.y = initialUltimateVelocity;
     }
 
     private IEnumerator ReturnGravity()

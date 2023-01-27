@@ -8,6 +8,7 @@ public class Talys : BaseHopper
     [Header("Talys Attributes")]
     [SerializeField] GameObject meteorPrefab;
     [SerializeField] int nMeteors = 4;
+    [SerializeField] Pool pool;
     Camera cam;
     float offsetPos = 7;
     float heightCam;
@@ -37,12 +38,17 @@ public class Talys : BaseHopper
             Vector2 meteoPos = new Vector2(Random.Range(cam.gameObject.transform.position.x - widthCam / 2 + offsetPos, cam.gameObject.transform.position.x + widthCam / 2 - offsetPos),
                                                         cam.gameObject.transform.position.y + heightCam / 2 + 3f + Random.Range(0f, 2f));
             yield return new WaitForSeconds(0.2f);
-            Instantiate(meteorPrefab, meteoPos, Quaternion.identity);
+
+            GameObject newMeteor = pool.Get();
+            newMeteor.transform.position = meteoPos;
+            newMeteor.SetActive(true);
+
         }
     }
 
     public override void EndUltimate()
     {
         isUlting = false;
+        canUlt = true;
     }
 }

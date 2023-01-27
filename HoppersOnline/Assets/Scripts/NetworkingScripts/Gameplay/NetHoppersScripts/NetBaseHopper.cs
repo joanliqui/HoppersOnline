@@ -22,8 +22,8 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
 
     private bool _isFacingRight = true;
     private bool _isGrounded;
-    private Vector2 appliedMovement;
-    private Vector2 currentMovement;
+    protected Vector2 appliedMovement;
+    protected Vector2 currentMovement;
     private Vector2 posLeftRay;
     private Vector2 posRightRay;
 
@@ -33,22 +33,29 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
     [Range(0.0f, 1.0f)]
     [SerializeField] float jumpCutMomentum = 0.2f;
     private float cntTimeJumping;
-    private bool isJumping;
+    protected bool isJumping;
     private bool isJumpCanceled = false;
 
     //gravity variables
-    [SerializeField] float lowGravity = -9.8f;
-    [SerializeField] float hardGravity;
+    [SerializeField] float lowGravity = -20f;
+    [SerializeField] float hardGravity = -100f;
+
+
+    //Abilitie Variables;
+    protected bool canUlt = true;
+    protected bool isUlting = false;
 
     //Animator
     private Animator anim;
     private int hVelocityHashAnim;
     private int isGroundedHashAnim;
     private int vVelocityHashAnim;
+    private int isUltingHashAnim;
 
     //Pause
     public delegate void PausePerformed();
     public event PausePerformed OnPausePerformed;
+
 
     #region ComponentReferences
     private PhotonView view;
@@ -88,7 +95,8 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
         hVelocityHashAnim = Animator.StringToHash("hVelocity");
         isGroundedHashAnim = Animator.StringToHash("isGrounded");
         vVelocityHashAnim = Animator.StringToHash("vVelocity");
-        
+        isUltingHashAnim = Animator.StringToHash("isUlting");
+
         if (view.IsMine)
         {
             OnPausePerformed += ToggleInputMap;
@@ -103,6 +111,11 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
             _inputs.Player.Jump.canceled += ctx =>
             {
                 isJumpCanceled = true;
+                if (isJumping)
+                {
+                    CutJumpOnCancelOrApex();
+                }
+
                 ReadJump(ctx);
             };
 
@@ -116,6 +129,7 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
                 pausedPressed = true;
             };
 
+            _inputs.Player.Ability.started += Abilitie;
         }
 
     }
@@ -178,7 +192,7 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
         }
     }
 
-    private void Gravity()
+    protected virtual void Gravity()
     {
         if (!isJumping && _isGrounded)
         {
@@ -225,17 +239,18 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
                 else
                 {
                     CutJumpOnCancelOrApex();
+                    isJumping = false;
                     isJumpPressed = false;
                 }
             }
         }
-        if (isJumpCanceled && isJumping)
-        {
-            CutJumpOnCancelOrApex();
-            isJumpCanceled = false;
-        }
+        //if (isJumpCanceled && isJumping)
+        //{
+        //    CutJumpOnCancelOrApex();
+        //    isJumpCanceled = false;
+        //}
     }
-    private void CutJumpOnCancelOrApex()
+    protected virtual void CutJumpOnCancelOrApex()
     {
         appliedMovement.y = appliedMovement.y * jumpCutMomentum;
         isJumping = false;
@@ -279,6 +294,7 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
         anim.SetBool(isGroundedHashAnim, _isGrounded);
         anim.SetFloat(hVelocityHashAnim, Mathf.Abs(rb.velocity.x));
         anim.SetFloat(vVelocityHashAnim, rb.velocity.y);
+        anim.SetBool(isUltingHashAnim, isUlting);
     }
 
     public void ToggleInputMap()
@@ -307,6 +323,22 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
             }
         }
     }
-   
+
+    protected virtual void Abilitie(InputAction.CallbackContext ctx)
+    {
+
+    }
+
+    protected IEnumerator DisableInputCoroutine(float sec)
+    {
+        _inputs.Player.Disable();
+        yield return new WaitForSeconds(sec);
+        _inputs.Player.Enable();
+    }
+
+    public virtual void EndUltimate()
+    {
+
+    }
 
 }

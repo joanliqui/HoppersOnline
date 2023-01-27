@@ -4,15 +4,29 @@ using UnityEngine;
 
 public class AnimEventsConnector : MonoBehaviour
 {
-    BaseHopper hopper;
+    Transform parent;
+
+    NetBaseHopper netHopper;
+    BaseHopper hopperOffline;
 
     private void Start()
     {
-        hopper = GetComponentInParent<BaseHopper>();
+        transform.parent.TryGetComponent<NetBaseHopper>( out netHopper);
+        if(netHopper == null)
+        {
+            transform.parent.TryGetComponent<BaseHopper>(out hopperOffline);
+        }
     }
 
     public void EndUltimate()
     {
-        hopper.EndUltimate();
+        if (hopperOffline)
+        {
+            hopperOffline.EndUltimate();
+        }
+        else
+        {
+            netHopper.EndUltimate();
+        }
     }
 }

@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 2030510415695533778}
   - component: {fileID: 1418254865925282804}
   - component: {fileID: 8143391983827341991}
-  - component: {fileID: 8698890525572965248}
   - component: {fileID: 2860822961811168924}
+  - component: {fileID: 439125745105264278}
   m_Layer: 0
   m_Name: BubbleGum
   m_TagString: Player
@@ -108,29 +108,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.12, y: 2.67}
   m_EdgeRadius: 0
---- !u!114 &8698890525572965248
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2030510415695533781}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b51a5f95323f14e42bbcf18d1101bef0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  movSpeed: 3000
-  airMovementMultiplier: 0.8
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  groundCheckDistance: 0.2
-  maxJumpTime: 0.25
-  initialJumpVelocity: 5000
-  jumpCutMomentum: 0.2
-  lowGravity: -20
-  hardGravity: -100
 --- !u!114 &2860822961811168924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,6 +141,33 @@ MonoBehaviour:
     InterpolateOption: 0
     InterpolateMoveTowardsSpeed: 1
     InterpolateLerpSpeed: 0
+--- !u!114 &439125745105264278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2030510415695533781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3867a43d8e723d34cb4faaf9024040ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movSpeed: 4000
+  airMovementMultiplier: 0.8
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  groundCheckDistance: 0.02
+  maxJumpTime: 0.5
+  initialJumpVelocity: 5000
+  jumpCutMomentum: 0.2
+  lowGravity: -20
+  hardGravity: -100
+  initialUltimateVelocity: 7000
+  OnUltimatePerformed:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &2030510417051138001
 GameObject:
   m_ObjectHideFlags: 0
@@ -176,6 +180,7 @@ GameObject:
   - component: {fileID: 2030510417051137999}
   - component: {fileID: 2030510417051137996}
   - component: {fileID: 9052833407742878713}
+  - component: {fileID: 1154314618}
   m_Layer: 0
   m_Name: BubbleGumGFX
   m_TagString: Untagged
@@ -297,3 +302,15 @@ MonoBehaviour:
   m_SynchronizeLayers:
   - SynchronizeType: 0
     LayerIndex: 0
+--- !u!114 &1154314618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2030510417051138001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5995d8a6859270245903483afc593fcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
