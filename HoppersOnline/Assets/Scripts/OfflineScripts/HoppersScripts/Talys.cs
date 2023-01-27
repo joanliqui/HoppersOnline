@@ -6,7 +6,6 @@ using UnityEngine.InputSystem;
 public class Talys : BaseHopper
 {
     [Header("Talys Attributes")]
-    [SerializeField] GameObject meteorPrefab;
     [SerializeField] int nMeteors = 4;
     [SerializeField] Pool pool;
     Camera cam;
@@ -17,6 +16,8 @@ public class Talys : BaseHopper
     private void Start()
     {
         cam = Camera.main;
+        if (pool == null)
+            pool = GetComponent<Pool>();
     }
     protected override void Abilitie(InputAction.CallbackContext ctx)
     {

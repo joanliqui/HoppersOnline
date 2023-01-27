@@ -108,7 +108,7 @@ MonoBehaviour:
   hardGravity: -100
   meteorPrefab: {fileID: 7837195382680282400, guid: e9ba04bbafb3ef347bf984b5b48b6cfa, type: 3}
   nMeteors: 4
-  pool: {fileID: 0}
+  pool: {fileID: 3363948697273493220}
 --- !u!114 &3363948697273493220
 MonoBehaviour:
   m_ObjectHideFlags: 0

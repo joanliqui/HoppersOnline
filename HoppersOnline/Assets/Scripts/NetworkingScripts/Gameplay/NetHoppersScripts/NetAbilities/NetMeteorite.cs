@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class Meteorite : MonoBehaviour, IPooleable
+public class NetMeteorite : MonoBehaviour, IPooleable
 {
     [SerializeField] float speed;
     [SerializeField] float impulseForce = 2000;
@@ -13,9 +14,10 @@ public class Meteorite : MonoBehaviour, IPooleable
     private float cntLifeTime;
 
     private BasePool pool;
-    public BasePool Pool 
-    { 
-        get { return pool; } 
+    private PhotonView view;
+    public BasePool Pool
+    {
+        get { return pool; }
         set
         {
             if (pool == null)
@@ -23,14 +25,15 @@ public class Meteorite : MonoBehaviour, IPooleable
         }
     }
 
-    public GameObject GameObject 
-    { 
+    public GameObject GameObject
+    {
         get => this.gameObject;
     }
 
     private void Awake()
     {
         source = GetComponent<AudioSource>();
+        view = GetComponent<PhotonView>();
     }
 
     private void OnEnable()
@@ -46,7 +49,7 @@ public class Meteorite : MonoBehaviour, IPooleable
     void Update()
     {
         transform.position += Vector3.down * speed * Random.Range(1, 1.5f) * Time.deltaTime;
-        if(cntLifeTime < lifeTime)
+        if (cntLifeTime < lifeTime)
         {
             cntLifeTime += Time.deltaTime;
         }
@@ -58,6 +61,8 @@ public class Meteorite : MonoBehaviour, IPooleable
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (!PhotonNetwork.IsMasterClient) return;
+
         if (other.TryGetComponent<IDamageable>(out IDamageable obj))
         {
             if (!other.gameObject.TryGetComponent(out Talys t))

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pool : MonoBehaviour
+public class Pool : BasePool
 {
     [SerializeField] GameObject prefab;
     [SerializeField] int initialPoolSize = 8;
@@ -36,7 +36,7 @@ public class Pool : MonoBehaviour
         newObject.GetComponent<IPooleable>().Pool = this;
     }
 
-    public void ReturnToPool(IPooleable objectToReturn)
+    public override void ReturnToPool(IPooleable objectToReturn)
     {
         objectToReturn.GameObject.SetActive(false);
         objectPool.Enqueue(objectToReturn.GameObject);

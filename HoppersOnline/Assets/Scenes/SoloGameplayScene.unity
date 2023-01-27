@@ -8559,25 +8559,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2d90c12b8c4ff574fa368891d48053dc, type: 3}
---- !u!1 &1381763666 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6804445288995471258, guid: 2d90c12b8c4ff574fa368891d48053dc, type: 3}
-  m_PrefabInstance: {fileID: 1381763665}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1381763667
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1381763666}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd819aa691710bf48bfae557ea4e34ec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefab: {fileID: 7837195382680282400, guid: e9ba04bbafb3ef347bf984b5b48b6cfa, type: 3}
-  initialPoolSize: 8
 --- !u!1 &1407426645
 GameObject:
   m_ObjectHideFlags: 0
