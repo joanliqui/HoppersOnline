@@ -58,7 +58,7 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
 
 
     #region ComponentReferences
-    private PhotonView view;
+    protected PhotonView view;
     private Controls _inputs;
     private Rigidbody2D rb;
     private Collider2D col;
@@ -119,6 +119,7 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
                 ReadJump(ctx);
             };
 
+            //Pause
             _inputs.Player.Pause.started += ctx =>
             {
                 pausedPressed = true;
@@ -129,6 +130,7 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
                 pausedPressed = true;
             };
 
+            //Ability
             _inputs.Player.Ability.started += Abilitie;
         }
 

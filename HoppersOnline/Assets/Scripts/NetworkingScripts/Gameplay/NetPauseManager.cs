@@ -12,6 +12,7 @@ public class NetPauseManager : MonoBehaviour
     [SerializeField] GameObject pausePanelObject;
     List<NetBaseHopper> hoppersInGame = new List<NetBaseHopper>();
 
+    //Component References
     PhotonView view;
 
     public static bool IsPaused { get => isPaused; }
@@ -61,7 +62,6 @@ public class NetPauseManager : MonoBehaviour
 
     public void TogglePause()
     {
-        Debug.LogWarning("Called Toggle Pause");
         view.RPC("TogglePauseRPC", RpcTarget.All);
     }
 

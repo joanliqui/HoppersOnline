@@ -20,11 +20,11 @@ public class BubbleGum : BaseHopper
 
             ImpulseUp();
             StartCoroutine(DisableInputCoroutine(0.1f));
-            //StartCoroutine(ReturnGravity());
 
             OnUltimatePerformed?.Invoke();
 
             canUlt = false;
+            cntUltTime = 0.0f;
         }
     }
 
@@ -50,7 +50,6 @@ public class BubbleGum : BaseHopper
     public override void EndUltimate()
     {
         isUlting = false;
-        Debug.Log("EndUltimate");
-        canUlt = true;
+        //canUlt = true;
     }
 }

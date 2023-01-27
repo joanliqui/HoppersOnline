@@ -8,6 +8,7 @@ TagManager:
   - SelectionManager
   - GameMode
   - InitialConnector
+  - UltBarContainer
   layers:
   - Default
   - TransparentFX

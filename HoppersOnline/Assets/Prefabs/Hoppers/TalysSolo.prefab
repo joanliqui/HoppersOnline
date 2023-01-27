@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3363948697273493220}
   m_Layer: 0
   m_Name: TalysSolo
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -106,7 +106,8 @@ MonoBehaviour:
   jumpCutMomentum: 0.2
   lowGravity: -20
   hardGravity: -100
-  meteorPrefab: {fileID: 7837195382680282400, guid: e9ba04bbafb3ef347bf984b5b48b6cfa, type: 3}
+  cooldown: 3
+  ultBarPrefab: {fileID: 5664380267365987584, guid: dde1ad1ecc85adb46b03fd9bfafc564a, type: 3}
   nMeteors: 4
   pool: {fileID: 3363948697273493220}
 --- !u!114 &3363948697273493220

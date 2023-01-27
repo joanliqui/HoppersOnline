@@ -14,12 +14,8 @@ public class NetTalys : NetBaseHopper
     float heightCam;
     float widthCam;
 
-    PhotonView view;
-
     private void Start()
     {
-        view = GetComponent<PhotonView>();
-
         cam = Camera.main;
         if (pool == null)
             pool = GetComponent<NetPool>();

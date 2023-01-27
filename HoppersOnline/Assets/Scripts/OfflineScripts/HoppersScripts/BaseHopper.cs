@@ -9,6 +9,7 @@ public class BaseHopper : MonoBehaviour, IDamageable
     protected float hDir = 0;
     protected bool isJumpPressed;
     protected bool pausePressed;
+    private bool pausedPressed;
 
     [Header("Movement Settings")]
     [SerializeField] protected float movSpeed = 1000;
@@ -37,9 +38,16 @@ public class BaseHopper : MonoBehaviour, IDamageable
     [SerializeField] float lowGravity = -20f;
     [SerializeField] float hardGravity = -100f;
 
-    //Abilitie Variables;
-    protected bool canUlt = true;
+    //Ultimate Variables;
+    [Header("UltimateVariables")]
+    [SerializeField] protected float cooldown = 3f;
+    [SerializeField] UltBarController ultBarPrefab;
+    protected float cntUltTime = 0;
+    protected bool canUlt = false;
     protected bool isUlting = false;
+
+    public delegate void UltCharging(float progres);
+    public event UltCharging OnUltCharging;
 
     //Animator
     private Animator anim;
@@ -48,11 +56,19 @@ public class BaseHopper : MonoBehaviour, IDamageable
     private int vVelocityHashAnim;
     private int isUltingHashAnim;
 
+    //Pause
+    public delegate void PausePerformed();
+    public event PausePerformed OnPausePerformed;
+
     #region ComponentReferences
     private Controls _inputs;
     private Rigidbody2D rb;
     private Collider2D col;
+
     #endregion
+
+    public float Cooldown { get => cooldown; set => cooldown = value; }
+
 
     #region Enable/Disable
     private void OnEnable()
@@ -96,9 +112,24 @@ public class BaseHopper : MonoBehaviour, IDamageable
             ReadJump(ctx);
         };
 
+        //Pause
+        _inputs.Player.Pause.started += ctx =>
+        {
+            pausedPressed = true;
+            OnPausePerformed?.Invoke();
+        };
+        _inputs.Player.Pause.canceled += ctx =>
+        {
+            pausedPressed = false;
+        };
+
+        //Ability
         _inputs.Player.Ability.started += Abilitie;
 
+        SpawnUltBar();
     }
+
+
 
     private void Update()
     {
@@ -113,6 +144,8 @@ public class BaseHopper : MonoBehaviour, IDamageable
         
         if (hDir > 0 && !_isFacingRight) Flip();
         else if (hDir < 0 && _isFacingRight) Flip();
+
+        CooldownUltimate();
 
         UpdateAnimations();
     }
@@ -221,6 +254,24 @@ public class BaseHopper : MonoBehaviour, IDamageable
         Debug.Log("Cuted");
     }
 
+    protected void CooldownUltimate()
+    {
+        if (!canUlt)
+        {
+            if (cntUltTime < cooldown)
+            {
+                cntUltTime += Time.deltaTime;
+            }
+            else
+            {
+                canUlt = true;
+                cntUltTime = cooldown;
+            }
+            OnUltCharging?.Invoke(cntUltTime);
+        }
+    }
+    
+
     #region ReadInput
     private void ReadMovement(InputAction.CallbackContext ctx)
     {
@@ -263,7 +314,7 @@ public class BaseHopper : MonoBehaviour, IDamageable
 
     protected virtual void Abilitie(InputAction.CallbackContext ctx)
     {
-
+        cntUltTime = 0;
     }
 
     protected IEnumerator DisableInputCoroutine(float sec)
@@ -276,5 +327,12 @@ public class BaseHopper : MonoBehaviour, IDamageable
     public virtual void EndUltimate()
     {
 
+    }
+
+    protected void SpawnUltBar()
+    {
+        Transform p = GameObject.FindGameObjectWithTag("UltBarContainer").transform;
+        UltBarController ultBar = Instantiate(ultBarPrefab, p);
+        ultBar.SetHopper(this);
     }
 }
