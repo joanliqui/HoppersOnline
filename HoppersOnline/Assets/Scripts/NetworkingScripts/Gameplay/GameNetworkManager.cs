@@ -7,6 +7,8 @@ using UnityEngine.SceneManagement;
 
 public class GameNetworkManager : MonoBehaviourPunCallbacks
 {
+    [SerializeField] NetMapBuilder mapBuilder;
+    [SerializeField]
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         if ((int)otherPlayer.CustomProperties["playerNumber"] == 1 || PhotonNetwork.CurrentRoom.PlayerCount <= 1)

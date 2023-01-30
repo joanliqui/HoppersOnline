@@ -7,12 +7,14 @@ using Photon.Pun;
 
 public class NetBaseHopper : MonoBehaviour, IDamageable
 {
+    [SerializeField] CharacterSO hopperdCard;
+
     private bool isPaused = false;
     //Input Variables
     private float hDir = 0;
     private bool isJumpPressed;
     private bool pausedPressed;
-
+    [Space(20)]
     [Header("Movement Settings")]
     [SerializeField] protected float movSpeed = 4000;
     [Tooltip("A multiplier to reduce the mov Speed on air")]
@@ -41,9 +43,16 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
     [SerializeField] float hardGravity = -100f;
 
 
-    //Abilitie Variables;
-    protected bool canUlt = true;
+    //Ultimate Variables;
+    [Header("UltimateVariables")]
+    [SerializeField] protected float cooldown = 3f;
+    [SerializeField] NetUltBarController ultBarPrefab;
+    protected float cntUltTime = 0;
+    protected bool canUlt = false;
     protected bool isUlting = false;
+
+    public delegate void UltCharging(float progres);
+    public event UltCharging OnUltCharging;
 
     //Animator
     private Animator anim;
@@ -56,15 +65,16 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
     public delegate void PausePerformed();
     public event PausePerformed OnPausePerformed;
 
-
     #region ComponentReferences
     protected PhotonView view;
     private Controls _inputs;
     private Rigidbody2D rb;
     private Collider2D col;
+    #endregion
 
     public PhotonView View { get => view;}
-    #endregion
+    public float Cooldown { get => cooldown; set => cooldown = value; }
+    public CharacterSO HopperdCard { get => hopperdCard; set => hopperdCard = value; }
 
     #region Enable/Disable
     private void OnEnable()
@@ -132,6 +142,7 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
 
             //Ability
             _inputs.Player.Ability.started += Abilitie;
+
         }
 
     }
@@ -152,6 +163,7 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
             if (hDir > 0 && !_isFacingRight) Flip();
             else if (hDir < 0 && _isFacingRight) Flip();
 
+            CooldownUltimate();
             UpdateAnimations();
         }
     }
@@ -246,17 +258,29 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
                 }
             }
         }
-        //if (isJumpCanceled && isJumping)
-        //{
-        //    CutJumpOnCancelOrApex();
-        //    isJumpCanceled = false;
-        //}
     }
     protected virtual void CutJumpOnCancelOrApex()
     {
         appliedMovement.y = appliedMovement.y * jumpCutMomentum;
         isJumping = false;
         Debug.Log("Cuted");
+    }
+
+    protected void CooldownUltimate()
+    {
+        if (!canUlt)
+        {
+            if (cntUltTime < cooldown)
+            {
+                cntUltTime += Time.deltaTime;
+            }
+            else
+            {
+                canUlt = true;
+                cntUltTime = cooldown;
+            }
+            OnUltCharging?.Invoke(cntUltTime);
+        }
     }
 
     #region ReadInput
@@ -342,5 +366,16 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
     {
 
     }
+
+    //public void SpawnUltBar()
+    //{
+    //    Transform p = GameObject.FindGameObjectWithTag("UltBarContainer").transform;
+
+    //    GameObject g = PhotonNetwork.Instantiate(ultBarPrefab.gameObject.name, Vector3.zero, Quaternion.identity);
+
+    //    NetUltBarController ultBar = g.GetComponent<NetUltBarController>();
+    //    ultBar.SetHopper(this);
+        
+    //}
 
 }

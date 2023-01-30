@@ -153,17 +153,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3867a43d8e723d34cb4faaf9024040ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hopperdCard: {fileID: 11400000, guid: dc916c58d0c27fd428440a25df129e3e, type: 2}
   movSpeed: 4000
   airMovementMultiplier: 0.8
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
   groundCheckDistance: 0.02
-  maxJumpTime: 0.5
+  maxJumpTime: 0.15
   initialJumpVelocity: 5000
   jumpCutMomentum: 0.2
   lowGravity: -20
   hardGravity: -100
+  cooldown: 3
+  ultBarPrefab: {fileID: 2357493106988726264, guid: 666f077b4d585c847be52abc938df059, type: 3}
   initialUltimateVelocity: 7000
   OnUltimatePerformed:
     m_PersistentCalls:

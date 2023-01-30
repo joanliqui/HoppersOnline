@@ -5,12 +5,15 @@ using UnityEngine.InputSystem;
 
 public class BaseHopper : MonoBehaviour, IDamageable
 {
+    [SerializeField] CharacterSO hopperdCard;
+
     //Input Variables
     protected float hDir = 0;
     protected bool isJumpPressed;
     protected bool pausePressed;
     private bool pausedPressed;
 
+    [Space(20)]
     [Header("Movement Settings")]
     [SerializeField] protected float movSpeed = 1000;
     [Tooltip("A multiplier to reduce the mov Speed on air")]
@@ -68,6 +71,7 @@ public class BaseHopper : MonoBehaviour, IDamageable
     #endregion
 
     public float Cooldown { get => cooldown; set => cooldown = value; }
+    public CharacterSO HopperdCard { get => hopperdCard; set => hopperdCard = value; }
 
 
     #region Enable/Disable

@@ -52,6 +52,5 @@ public class Talys : BaseHopper
     public override void EndUltimate()
     {
         isUlting = false;
-        //canUlt = true;
     }
 }

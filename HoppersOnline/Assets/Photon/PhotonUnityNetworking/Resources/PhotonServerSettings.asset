@@ -58,6 +58,8 @@ MonoBehaviour:
   - DisableObject
   - InicializePoolRPC
   - ToogleObject
+  - SetHopperRPC
+  - UpdateBarRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

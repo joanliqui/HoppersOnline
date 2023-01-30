@@ -26,6 +26,7 @@ public class NetBubbleGum : NetBaseHopper
             OnUltimatePerformed?.Invoke();
 
             canUlt = false;
+            cntUltTime = 0.0f;
         }
     }
 
@@ -51,7 +52,5 @@ public class NetBubbleGum : NetBaseHopper
     public override void EndUltimate()
     {
         isUlting = false;
-        Debug.Log("EndUltimate");
-        canUlt = true;
     }
 }

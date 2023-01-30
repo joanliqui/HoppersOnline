@@ -26,7 +26,9 @@ public class NetTalys : NetBaseHopper
         {
             isUlting = true;
             StartCoroutine(InvokeMeteors());
+
             canUlt = false;
+            cntUltTime = 0.0f;
         }
     }
 
@@ -58,6 +60,6 @@ public class NetTalys : NetBaseHopper
     public override void EndUltimate()
     {
         isUlting = false;
-        canUlt = true;
+        //canUlt = true;
     }
 }
