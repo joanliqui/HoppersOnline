@@ -5,32 +5,39 @@ using UnityEngine.Events;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class NetGameManager : MonoBehaviour
 {
+    PhotonView view;
+
     private static NetGameManager _instance;
 
     public UnityEvent onGameStarted;
     public UnityEvent onGameEnded;
 
     [SerializeField] float timeToStart;
-    private bool started = false;
     private float cntTime;
-    List<NetBaseHopper> hoppers;
-    [SerializeField] PlayerSpawner spawner;
+    
+    //Fases del juego
+    private bool gameStarted = false;
+    private bool actuallyPlaying = false;
+    private bool gameEnded = false;
 
-    [Space(20)]
-    [Header("End Variables")]
-    [SerializeField] GameObject endPanel;
-    [SerializeField] TextMeshProUGUI playerNumberDisplayer;
-    [SerializeField] GameObject playAgainButton;
+    private float lerpTime = 0;
+
+    List<NetBaseHopper> hoppersInGame;
+    [SerializeField] PlayerSpawner spawner;
 
     //NO SE QUE HACER CON ESTO
     public Dictionary<Player, NetBaseHopper> playerHopperDictionary = new Dictionary<Player, NetBaseHopper>();
     private Queue< KeyValuePair<Player, NetBaseHopper>> cola = new Queue<KeyValuePair<Player, NetBaseHopper>>();
 
+    #region PROPIEDADES
     public static NetGameManager Instance { get => _instance; }
-
+    public List<NetBaseHopper> HoppersInGame { get => hoppersInGame;}
+    public bool GameEnded { get => gameEnded; set => gameEnded = value; }
+    #endregion
     private void Awake()
     {
         if(_instance == null)
@@ -41,26 +48,47 @@ public class NetGameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        hoppersInGame = spawner.GetHoppersInGame();
+        view = GetComponent<PhotonView>();
     }
 
     private void Start()
     {
+        Time.timeScale = 1f;
         cntTime = 0.0f;
-        started = false;
-        hoppers = spawner.GetHoppersInGame();
-
-        endPanel.SetActive(false);
+        actuallyPlaying = false;
 
         //GameStarted Events
         onGameStarted.AddListener(StartHoppersCooldowns);
+        onGameStarted.AddListener(GamesFaseStart);
+
         //GameEnded Events
-        onGameEnded.AddListener(SetEndPanel);
+        //onGameEnded.AddListener(SetEndPanel);
+        onGameEnded.AddListener(GameFaseEnded);
+        onGameEnded.AddListener(DisableAllInputs);
+    }
+
+    private void Update()
+    {
+        if (gameEnded)
+        {
+            if(lerpTime < 1)
+            {
+                Time.timeScale = Mathf.Lerp(1, 0, lerpTime);
+                lerpTime += Time.deltaTime;
+            }
+            else
+            {
+                lerpTime = 1f;
+                Time.timeScale = 0f;
+            }
+        }
     }
 
     //AQUI TENGO QUE CONSEGUIR QUE DEVUELVA EL GAMEOBJECT DEL HOPPER ASIGANDO AL PLAYER QUE PASAMOS POR PARAMETRO
     public NetBaseHopper GetHopperByPlayerID(int hopperID)
     {
-        foreach (NetBaseHopper item in hoppers)
+        foreach (NetBaseHopper item in hoppersInGame)
         {
             if (item.View.OwnerActorNr == hopperID)
             {
@@ -72,30 +100,39 @@ public class NetGameManager : MonoBehaviour
 
     public void StartHoppersCooldowns()
     {
-        started = true;
-        foreach (NetBaseHopper hopper in hoppers)
+        actuallyPlaying = true;
+        foreach (NetBaseHopper hopper in hoppersInGame)
         {
             hopper.StartCooldown();
         }
     }
 
-    public void SetEndPanel()
-    {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            playAgainButton.SetActive(true);
-        }
-        else
-        {
-            playAgainButton.SetActive(false);
-        }
-
-        playerNumberDisplayer.text = "x";
-    }
-
     public void OnPlayAgainButtonClick()
     {
-        PhotonNetwork.LoadLevel("MultiGameplayScene");
+        Time.timeScale = 1f;
+        PhotonNetwork.LoadLevel("ReloadingScene");
+        //view.RPC("LoadLevelRPC", RpcTarget.All);
     }
 
+    public void GamesFaseStart()
+    {
+        gameStarted = true;
+        actuallyPlaying = true;
+        gameEnded = false;
+    }
+
+    public void GameFaseEnded()
+    {
+        gameStarted = true;
+        actuallyPlaying = true;
+        gameEnded = true;
+    }
+
+    public void DisableAllInputs()
+    {
+        foreach (NetBaseHopper item in hoppersInGame)
+        {
+            item.DisableAllInput();
+        }
+    }
 }

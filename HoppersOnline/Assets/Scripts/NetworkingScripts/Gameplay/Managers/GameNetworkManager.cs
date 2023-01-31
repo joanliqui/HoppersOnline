@@ -11,6 +11,10 @@ public class GameNetworkManager : MonoBehaviourPunCallbacks
     [SerializeField] NetMapBuilder mapBuilder;
     public UnityEvent<NetBaseHopper> onPlayerDisconect;
 
+    private void Awake()
+    {
+        PhotonNetwork.MinimalTimeScaleToDispatchInFixedUpdate = 1f;
+    }
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         //NetBaseHopper disconected = NetGameManager.Instance.GetHopperByPlayerID((int)otherPlayer.ActorNumber);

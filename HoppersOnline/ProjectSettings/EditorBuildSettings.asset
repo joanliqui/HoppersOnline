@@ -24,6 +24,9 @@ EditorBuildSettings:
     path: Assets/Scenes/MultiGameplayScene.unity
     guid: 9b6dbcb0144775f4183cab1360cc9435
   - enabled: 1
+    path: Assets/Scenes/ReloadingScene.unity
+    guid: e5745ba9037eea44398a0fa29b069433
+  - enabled: 1
     path: Assets/Scenes/CreditsScene.unity
     guid: 87ca93b254e155c4295c1d4fd28cd408
   - enabled: 0

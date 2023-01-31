@@ -369,6 +369,12 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
 
     }
 
+    public void DisableAllInput()
+    {
+        if(view.IsMine)
+            _inputs.Player.Disable();
+    }
+
     public void StartCooldown()
     {
         startCld = true;
