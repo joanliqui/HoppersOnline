@@ -5,6 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName ="Character", menuName ="HoppersMenu/HopperSO")]
 public class CharacterSO : ScriptableObject
 {
+    public int hopperNumber;
     public string characterName;
     public Sprite characterSprite;
     [SerializeField] GameObject netCharacterPrefab;

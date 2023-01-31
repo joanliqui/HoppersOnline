@@ -45,4 +45,9 @@ public class PlayerSpawner : MonoBehaviour
             }
         }
     }
+
+    public List<NetBaseHopper> GetHoppersInGame()
+    {
+        return hoppersInGame;
+    }
 }

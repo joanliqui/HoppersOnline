@@ -14,10 +14,16 @@ public class NetCameraManager : MonoBehaviour
     private void Start()
     {
         cntSpeed = initialSpeed;
+        canMove = false;
+       
+        NetGameManager.Instance.onGameStarted.AddListener(LetsMove);
+        
     }
 
     void Update()
     {
+        if (!canMove) return;
+
         if (PhotonNetwork.IsMasterClient)
         {
             if (canMove)
@@ -35,5 +41,10 @@ public class NetCameraManager : MonoBehaviour
         {
             cntSpeed = Mathf.Lerp(0.0f, cntSpeed, t);
         }
+    }
+
+    private void LetsMove()
+    {
+        canMove = true;
     }
 }

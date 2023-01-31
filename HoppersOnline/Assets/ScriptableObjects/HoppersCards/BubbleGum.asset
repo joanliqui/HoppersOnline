@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: baae604aaae6fb34d9aafd40bee38ffe, type: 3}
   m_Name: BubbleGum
   m_EditorClassIdentifier: 
+  hopperNumber: 1
   characterName: BubbleGum
   characterSprite: {fileID: 1235642064, guid: c479d55e5d1dac34e87a39b79d1124d2, type: 3}
   netCharacterPrefab: {fileID: 2030510415695533781, guid: 44abad8dfaf987545b43abcaaaa535be, type: 3}

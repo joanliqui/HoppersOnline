@@ -9,6 +9,8 @@ TagManager:
   - GameMode
   - InitialConnector
   - UltBarContainer
+  - GameManager
+  - WrappingCamera
   layers:
   - Default
   - TransparentFX

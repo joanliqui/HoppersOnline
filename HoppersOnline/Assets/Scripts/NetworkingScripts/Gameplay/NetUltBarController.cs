@@ -16,6 +16,9 @@ public class NetUltBarController : MonoBehaviour
     //Component References
     AudioSource source;
 
+    public NetBaseHopper Hopper { get => hopper; set => hopper = value; }
+    public PhotonView View { get => view; set => view = value; }
+
     private void Awake()
     {
         progress = 0;

@@ -62,8 +62,6 @@ public class LobbyManager2 : MonoBehaviourPunCallbacks
 
     public void OnClickCreate()
     {
-        if (roomInputField.text == string.Empty) return;
-
 
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = 4;
