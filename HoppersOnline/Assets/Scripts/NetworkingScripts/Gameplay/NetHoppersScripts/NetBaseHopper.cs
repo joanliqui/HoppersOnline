@@ -8,6 +8,7 @@ using Photon.Pun;
 public class NetBaseHopper : MonoBehaviour, IDamageable
 {
     [SerializeField] CharacterSO hopperdCard;
+    public int playerNumber;
 
     private bool isPaused = false;
     //Input Variables

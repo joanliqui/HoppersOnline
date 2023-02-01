@@ -55,7 +55,6 @@ public class NetUltBarController : MonoBehaviour
 
         NetBaseHopper hop = PhotonNetwork.GetPhotonView(id).gameObject.GetComponent<NetBaseHopper>();
         hopperImage.sprite = hop.HopperdCard.characterSprite;
-        Debug.Log("called from UltBar:" + hop.name);
         if (hopper != null)
         {
             hopper.OnUltCharging -= UpdateBar;

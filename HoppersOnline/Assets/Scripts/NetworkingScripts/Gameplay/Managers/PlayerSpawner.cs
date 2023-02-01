@@ -6,16 +6,21 @@ using Photon.Pun;
 
 public class PlayerSpawner : MonoBehaviour
 {
+    private PhotonView view;
+
     private Transform[] spawnPoints = new Transform[4];
     [SerializeField] CharactersListSO listSO;
     private GameMode gameMode;
 
     List<NetBaseHopper> hoppersInGame = new List<NetBaseHopper>();
     UltimateBarsManager barManager;
+   
 
-    public UnityEvent<NetBaseHopper> onPlayerSpawn; 
+    public UnityEvent<NetBaseHopper> onPlayerSpawn;
+    
     void Awake()
     {
+        view = GetComponent<PhotonView>();
         gameMode = GameObject.FindGameObjectWithTag("GameMode").GetComponent<GameMode>();
         if(gameMode != null)
         {
@@ -37,13 +42,24 @@ public class PlayerSpawner : MonoBehaviour
                     GameObject playerToSpawn = listSO.charactersList[(int)PhotonNetwork.LocalPlayer.CustomProperties["playerAvatar"]].GetCharacterPrefab(true);
                     GameObject player = PhotonNetwork.Instantiate(playerToSpawn.name, spawnPoint.position, Quaternion.identity);
 
+                    view.RPC("AddHopper", RpcTarget.All, player.GetComponent<PhotonView>().ViewID);
                     NetBaseHopper hopp = player.GetComponent<NetBaseHopper>();
-                    hoppersInGame.Add(hopp);
+
 
                     onPlayerSpawn?.Invoke(hopp);
                 }
             }
         }
+    }
+
+    [PunRPC]
+    private void AddHopper(int id)
+    {
+        PhotonView hopperView = PhotonNetwork.GetPhotonView(id);
+        NetBaseHopper hopp = hopperView.GetComponent<NetBaseHopper>();
+        hopp.playerNumber = (int)hopp.View.Owner.CustomProperties["playerNumber"];
+        hoppersInGame.Add(hopp);
+        NetGameManager.Instance.SetHopperToList(hopp);
     }
 
     public List<NetBaseHopper> GetHoppersInGame()

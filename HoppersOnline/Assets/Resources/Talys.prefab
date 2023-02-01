@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1654195777}
   - component: {fileID: 194605338144614717}
   - component: {fileID: 4501233805433366892}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TalysGFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -165,7 +165,7 @@ GameObject:
   - component: {fileID: 410107968}
   - component: {fileID: 410107969}
   - component: {fileID: 5074084648658347661}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Talys
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -305,6 +305,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hopperdCard: {fileID: 11400000, guid: 758cba56174489e4d973a0da6b2f7cf7, type: 2}
+  playerNumber: 0
   movSpeed: 4000
   airMovementMultiplier: 0.8
   groundLayer:

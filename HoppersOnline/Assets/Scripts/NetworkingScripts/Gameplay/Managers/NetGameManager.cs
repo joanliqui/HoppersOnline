@@ -26,8 +26,9 @@ public class NetGameManager : MonoBehaviour
 
     private float lerpTime = 0;
 
-    List<NetBaseHopper> hoppersInGame;
+    List<NetBaseHopper> hoppersInGame = new List<NetBaseHopper>();
     [SerializeField] PlayerSpawner spawner;
+    [SerializeField] LoseManager loseManager;
 
     //NO SE QUE HACER CON ESTO
     public Dictionary<Player, NetBaseHopper> playerHopperDictionary = new Dictionary<Player, NetBaseHopper>();
@@ -35,7 +36,7 @@ public class NetGameManager : MonoBehaviour
 
     #region PROPIEDADES
     public static NetGameManager Instance { get => _instance; }
-    public List<NetBaseHopper> HoppersInGame { get => hoppersInGame;}
+    public List<NetBaseHopper> HoppersInGame { get => hoppersInGame; set => hoppersInGame = value;}
     public bool GameEnded { get => gameEnded; set => gameEnded = value; }
     #endregion
     private void Awake()
@@ -48,7 +49,7 @@ public class NetGameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        hoppersInGame = spawner.GetHoppersInGame();
+        //loseManager.UpdateHoppersList(hoppersInGame);
         view = GetComponent<PhotonView>();
     }
 
@@ -134,5 +135,11 @@ public class NetGameManager : MonoBehaviour
         {
             item.DisableAllInput();
         }
+    }
+
+    public void SetHopperToList(NetBaseHopper hopper)
+    {
+        hoppersInGame.Add(hopper);
+        loseManager.AddToHoppersList(hopper);
     }
 }

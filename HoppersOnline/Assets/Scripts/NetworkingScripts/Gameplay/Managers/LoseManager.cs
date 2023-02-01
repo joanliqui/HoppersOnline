@@ -7,18 +7,23 @@ using Photon.Pun;
 
 public class LoseManager : MonoBehaviour
 {
+    [System.Serializable]
     private class HoppersForLoseCondition
     {
         NetBaseHopper hopper;
+        public bool hasLost;
         Transform pos;
         Collider2D col;
         public Vector2 posInView;
+
+        public NetBaseHopper Hopper { get => hopper; set => hopper = value; }
 
         public HoppersForLoseCondition(NetBaseHopper hopper)
         {
             this.hopper = hopper;
             this.pos = hopper.transform;
             this.col = hopper.transform.GetComponent<Collider2D>();
+            hasLost = false;
         }
 
         public void SetPosInView()
@@ -27,6 +32,10 @@ public class LoseManager : MonoBehaviour
         }
     }
 
+
+
+
+    private PhotonView view;
     List<HoppersForLoseCondition> hoppers = new List<HoppersForLoseCondition>();
     private List<Vector2> positionsInView = new List<Vector2>();
 
@@ -37,20 +46,18 @@ public class LoseManager : MonoBehaviour
     [SerializeField] GameObject playAgainButton;
 
 
-    private PhotonView view;
+    private int nPlayersLost = 0;
+    UnityEvent<NetBaseHopper> onPlayerDead = new UnityEvent<NetBaseHopper>();
+    
+
     private void Start()
     {
         view = GetComponent<PhotonView>();
-        foreach (NetBaseHopper item in NetGameManager.Instance.HoppersInGame)
-        {
-            HoppersForLoseCondition nuevo = new HoppersForLoseCondition(item);
-            hoppers.Add(nuevo);
-            positionsInView.Add(item.transform.position);
-        }
 
         endPanel.SetActive(false);
 
         NetGameManager.Instance.onGameEnded.AddListener(SetEndPanel);
+        onPlayerDead.AddListener(PlayerDead);
 
     }
     private void Update()
@@ -64,9 +71,25 @@ public class LoseManager : MonoBehaviour
 
                 if(positionsInView[i].y < 0)
                 {
-                    view.RPC("CallOnGameEvent", RpcTarget.All);
+                    if (!hoppers[i].hasLost)
+                    {
+                        nPlayersLost++;
+                        Debug.Log("Muerto: " + hoppers[i].Hopper.playerNumber);
+                        hoppers[i].hasLost = true;
+
+                        onPlayerDead?.Invoke(hoppers[i].Hopper);
+                    }
+                    
                 }
             }
+        }
+    }
+
+    private void PlayerDead(NetBaseHopper hop)
+    {
+        if(nPlayersLost == PhotonNetwork.CurrentRoom.PlayerCount - 1)
+        {
+            view.RPC("CallOnGameEvent", RpcTarget.All);
         }
     }
 
@@ -79,6 +102,17 @@ public class LoseManager : MonoBehaviour
     private void SetEndPanel()
     {
         endPanel.SetActive(true);
+        int winner = -1;
+        foreach (HoppersForLoseCondition item in hoppers)
+        {
+            if (!item.hasLost)
+            {
+                winner = item.Hopper.playerNumber;
+            }
+        }
+        if(PhotonNetwork.IsMasterClient)
+            view.RPC("SyncWinnerNumber", RpcTarget.All, winner);
+
         if (PhotonNetwork.IsMasterClient)
         {
             playAgainButton.SetActive(true);
@@ -90,8 +124,15 @@ public class LoseManager : MonoBehaviour
     }
 
     [PunRPC]
-    private void SetEndPanelRPC()
+    private void SyncWinnerNumber(int winner)
     {
-   
+        playerNumberDisplayer.text = winner.ToString();
+    }
+
+    public void AddToHoppersList(NetBaseHopper hop)
+    {
+        HoppersForLoseCondition nuevo = new HoppersForLoseCondition(hop);
+        hoppers.Add(nuevo);
+        positionsInView.Add(hop.transform.position);
     }
 }

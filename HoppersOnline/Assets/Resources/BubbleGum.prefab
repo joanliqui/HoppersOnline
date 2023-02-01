@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 2860822961811168924}
   - component: {fileID: 439125745105264278}
   - component: {fileID: 1271446748177697762}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BubbleGum
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -155,6 +155,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hopperdCard: {fileID: 11400000, guid: dc916c58d0c27fd428440a25df129e3e, type: 2}
+  playerNumber: 0
   movSpeed: 4000
   airMovementMultiplier: 0.8
   groundLayer:
@@ -197,7 +198,7 @@ GameObject:
   - component: {fileID: 2030510417051137996}
   - component: {fileID: 9052833407742878713}
   - component: {fileID: 1154314618}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BubbleGumGFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
