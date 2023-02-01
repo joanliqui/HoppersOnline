@@ -95,13 +95,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da8e4da6484769e418a640edb487502e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hopperdCard: {fileID: 11400000, guid: 758cba56174489e4d973a0da6b2f7cf7, type: 2}
   movSpeed: 4000
   airMovementMultiplier: 0.8
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
   groundCheckDistance: 0.02
-  maxJumpTime: 0.25
+  maxJumpTime: 0.1
   initialJumpVelocity: 7000
   jumpCutMomentum: 0.2
   lowGravity: -20

@@ -28,6 +28,12 @@ public class BaseHopper : MonoBehaviour, IDamageable
     private Vector2 posLeftRay;
     private Vector2 posRightRay;
 
+    //Roof Checker
+    [SerializeField] float roofCheckDistance = 0.1f;
+    protected Vector2 posRoofLeft;
+    protected Vector2 posRoofRight;
+    bool roofTouch;
+
     [Header("JumpVariables")] 
     [SerializeField] float maxJumpTime = 0.5f;
     [SerializeField] float initialJumpVelocity = 7000f;
@@ -48,6 +54,7 @@ public class BaseHopper : MonoBehaviour, IDamageable
     protected float cntUltTime = 0;
     protected bool canUlt = false;
     protected bool isUlting = false;
+    private bool startCld = false;
 
     public delegate void UltCharging(float progres);
     public event UltCharging OnUltCharging;
@@ -138,18 +145,27 @@ public class BaseHopper : MonoBehaviour, IDamageable
     private void Update()
     {
         _isGrounded = IsGrounded();
+        roofTouch = IsTouchingRoof();
 
         HorizontalMovement();
         
+        if (roofTouch && appliedMovement.y > 0)
+        {
+            appliedMovement.y = 0;
+            currentMovement.y = 0;
+        }
+
         Gravity();
         Jump();
+
 
         rb.velocity = appliedMovement * Time.deltaTime;
         
         if (hDir > 0 && !_isFacingRight) Flip();
         else if (hDir < 0 && _isFacingRight) Flip();
 
-        CooldownUltimate();
+        if(startCld)
+            CooldownUltimate();
 
         UpdateAnimations();
     }
@@ -164,6 +180,56 @@ public class BaseHopper : MonoBehaviour, IDamageable
         {
             appliedMovement.x = hDir * movSpeed * airMovementMultiplier;
         }
+    }
+    private void Flip()
+    {
+        _isFacingRight = !_isFacingRight;
+        transform.Rotate(0.0f, 180f, 0.0f);
+    }
+
+    private bool IsGrounded()
+    {
+        float xLeft = col.bounds.min.x;
+        float y = col.bounds.min.y;
+        float xRight = col.bounds.max.x;
+
+        posLeftRay = new Vector2(xLeft, y);
+        posRightRay = new Vector2(xRight, y);
+
+        bool groundLeft = Physics2D.Raycast(posLeftRay, Vector2.down, groundCheckDistance, groundLayer);
+        bool groundRight = Physics2D.Raycast(posRightRay, Vector2.down, groundCheckDistance, groundLayer);
+
+        if (groundLeft || groundRight)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private bool IsTouchingRoof()
+    {
+        float xLeft = col.bounds.min.x;
+        float y = col.bounds.max.y;
+        float xRight = col.bounds.max.x;
+
+        posRoofLeft = new Vector2(xLeft, y); 
+        posRoofRight = new Vector2(xRight, y);
+
+        bool roofLeft = Physics2D.Raycast(posRoofLeft, Vector2.up, roofCheckDistance, groundLayer);
+        bool roofRight = Physics2D.Raycast(posRoofRight, Vector2.up, roofCheckDistance, groundLayer);
+
+        if(roofLeft || roofRight)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
     }
 
     protected virtual void Gravity()
@@ -193,32 +259,6 @@ public class BaseHopper : MonoBehaviour, IDamageable
             Debug.Log("Pa tocar los huevos");
         }
     }
-    private void Flip()
-    {
-        _isFacingRight = !_isFacingRight;
-        transform.Rotate(0.0f, 180f, 0.0f);
-    }
-    private bool IsGrounded()
-    {
-        float xLeft = col.bounds.min.x;
-        float y = col.bounds.min.y;
-        float xRight = col.bounds.max.x;
-
-        posLeftRay = new Vector2(xLeft, y);
-        posRightRay = new Vector2(xRight, y);
-
-        bool groundLeft = Physics2D.Raycast(posLeftRay, Vector2.down, groundCheckDistance, groundLayer);
-        bool groundRight = Physics2D.Raycast(posRightRay, Vector2.down, groundCheckDistance, groundLayer);
-
-        if (groundLeft || groundRight)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
 
     private void Jump()
     {
@@ -244,11 +284,7 @@ public class BaseHopper : MonoBehaviour, IDamageable
                 }
             }
         }
-        //if (isJumpCanceled && isJumping)
-        //{
-        //    CutJumpOnCancelOrApex();
-        //    isJumpCanceled = false;
-        //}
+
     }
 
     private void CutJumpOnCancelOrApex()
@@ -257,7 +293,6 @@ public class BaseHopper : MonoBehaviour, IDamageable
         isJumping = false;
         Debug.Log("Cuted");
     }
-
     protected void CooldownUltimate()
     {
         if (!canUlt)
@@ -274,7 +309,7 @@ public class BaseHopper : MonoBehaviour, IDamageable
             OnUltCharging?.Invoke(cntUltTime);
         }
     }
-    
+
 
     #region ReadInput
     private void ReadMovement(InputAction.CallbackContext ctx)
@@ -306,6 +341,9 @@ public class BaseHopper : MonoBehaviour, IDamageable
         Gizmos.color = Color.red;
         Gizmos.DrawLine(posLeftRay, new Vector2(posLeftRay.x, posLeftRay.y - groundCheckDistance));
         Gizmos.DrawLine(posRightRay, new Vector2(posRightRay.x, posRightRay.y - groundCheckDistance));
+
+        Gizmos.DrawLine(posRoofLeft, new Vector2(posRoofLeft.x, posRoofLeft.y + roofCheckDistance));
+        Gizmos.DrawLine(posRoofRight, new Vector2(posRoofRight.x, posRoofRight.y + roofCheckDistance));
     }
 
     private void UpdateAnimations()
@@ -338,5 +376,15 @@ public class BaseHopper : MonoBehaviour, IDamageable
         Transform p = GameObject.FindGameObjectWithTag("UltBarContainer").transform;
         UltBarController ultBar = Instantiate(ultBarPrefab, p);
         ultBar.SetHopper(this);
+    }
+
+    public void DisableAllInput()
+    {
+        _inputs.Player.Disable();
+    }
+
+    public void StartCooldown()
+    {
+        startCld = true;
     }
 }

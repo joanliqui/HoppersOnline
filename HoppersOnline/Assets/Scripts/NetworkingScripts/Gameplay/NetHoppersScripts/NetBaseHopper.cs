@@ -257,7 +257,6 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
                 else
                 {
                     CutJumpOnCancelOrApex();
-                    isJumping = false;
                     isJumpPressed = false;
                 }
             }
