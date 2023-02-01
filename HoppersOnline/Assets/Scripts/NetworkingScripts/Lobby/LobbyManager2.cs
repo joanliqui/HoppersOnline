@@ -68,7 +68,11 @@ public class LobbyManager2 : MonoBehaviourPunCallbacks
         roomOptions.BroadcastPropsChangeToAll = true;
         roomOptions.PublishUserId = true;
         roomOptions.PlayerTtl = 0;
-        PhotonNetwork.CreateRoom(roomInputField.text, roomOptions);
+        
+        //string roomName = roomInputField.text;
+        string roomName = RandomPassword.GenerateRandomPassword(5);
+
+        PhotonNetwork.CreateRoom(roomName, roomOptions);
     }
 
     public void OnClickJoinButton()

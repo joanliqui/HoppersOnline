@@ -115,11 +115,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
-  m_Name: C&C Red Alert [INET] SDF
+  m_Name: C&C Red Alert [INET] SDF 1
   m_EditorClassIdentifier: 
-  hashCode: -551814630
+  hashCode: 369290379
   material: {fileID: -7398378385734811245}
-  materialHashCode: -1239594374
+  materialHashCode: -119519413
   m_Version: 1.1.0
   m_SourceFontFileGUID: 587535d74777cf949a35a7f983881446
   m_SourceFontFile_EditorRef: {fileID: 12800000, guid: 587535d74777cf949a35a7f983881446, type: 3}
@@ -2472,7 +2472,7 @@ MonoBehaviour:
     atlasHeight: 1024
     characterSetSelectionMode: 0
     characterSequence: 32 - 126, 160, 8203, 8230, 9633
-    referencedFontAssetGUID: 
+    referencedFontAssetGUID: 1701ad44a038fc74a872627342c2217c
     referencedTextAssetGUID: 
     fontStyle: 0
     fontStyleModifier: 0
@@ -2512,7 +2512,7 @@ Texture2D:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: C&C Red Alert [INET] SDF Atlas
+  m_Name: C&C Red Alert [INET] SDF 1 Atlas
   m_ImageContentsHash:
     serializedVersion: 2
     Hash: 00000000000000000000000000000000

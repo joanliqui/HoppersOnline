@@ -312,6 +312,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   groundCheckDistance: 0.02
+  roofCheckDistance: 0.1
   maxJumpTime: 0.15
   initialJumpVelocity: 7000
   jumpCutMomentum: 0.2

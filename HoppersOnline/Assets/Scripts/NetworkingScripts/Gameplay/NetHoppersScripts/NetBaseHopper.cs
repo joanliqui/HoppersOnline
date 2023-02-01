@@ -30,6 +30,12 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
     private Vector2 posLeftRay;
     private Vector2 posRightRay;
 
+    //Roof Checker
+    [SerializeField] float roofCheckDistance = 0.1f;
+    protected Vector2 posRoofLeft;
+    protected Vector2 posRoofRight;
+    bool roofTouch;
+
     [Header("JumpVariables")]
     [SerializeField] float maxJumpTime = 0.5f;
     [SerializeField] float initialJumpVelocity = 7000;
@@ -154,8 +160,15 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
         if (view.IsMine)
         {
             _isGrounded = IsGrounded();
+            roofTouch = IsTouchingRoof();
 
             HorizontalMovement();
+
+            if (roofTouch && appliedMovement.y > 0)
+            {
+                appliedMovement.y = 0;
+                currentMovement.y = 0;
+            }
 
             Gravity();
             Jump();
@@ -210,6 +223,28 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
         }
     }
 
+    private bool IsTouchingRoof()
+    {
+        float xLeft = col.bounds.min.x;
+        float y = col.bounds.max.y;
+        float xRight = col.bounds.max.x;
+
+        posRoofLeft = new Vector2(xLeft, y);
+        posRoofRight = new Vector2(xRight, y);
+
+        bool roofLeft = Physics2D.Raycast(posRoofLeft, Vector2.up, roofCheckDistance, groundLayer);
+        bool roofRight = Physics2D.Raycast(posRoofRight, Vector2.up, roofCheckDistance, groundLayer);
+
+        if (roofLeft || roofRight)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
     protected virtual void Gravity()
     {
         if (!isJumping && _isGrounded)
@@ -315,6 +350,9 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
         Gizmos.color = Color.red;
         Gizmos.DrawLine(posLeftRay, new Vector2(posLeftRay.x, posLeftRay.y - groundCheckDistance));
         Gizmos.DrawLine(posRightRay, new Vector2(posRightRay.x, posRightRay.y - groundCheckDistance));
+
+        Gizmos.DrawLine(posRoofLeft, new Vector2(posRoofLeft.x, posRoofLeft.y + roofCheckDistance));
+        Gizmos.DrawLine(posRoofRight, new Vector2(posRoofRight.x, posRoofRight.y + roofCheckDistance));
     }
 
     private void UpdateAnimations()

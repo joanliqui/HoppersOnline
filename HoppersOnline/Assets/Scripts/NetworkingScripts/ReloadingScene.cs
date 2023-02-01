@@ -19,8 +19,21 @@ public class ReloadingScene : MonoBehaviour
 
     private IEnumerator Dale()
     {
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.1f);
         PhotonNetwork.LoadLevel("MultiGameplayScene");
 
+    }
+
+    IEnumerator LoadLevelAsync()
+    {
+        PhotonNetwork.LoadLevel("Network Test");
+
+        while (PhotonNetwork.LevelLoadingProgress < 1)
+        {
+            //loadAmountText.text = "Loading: %" + (int)(PhotonNetwork.LevelLoadingProgress * 100);
+            //loadAmount = async.progress;
+            //progressBar.fillAmount = PhotonNetwork.LevelLoadingProgress;
+            yield return new WaitForEndOfFrame();
+        }
     }
 }

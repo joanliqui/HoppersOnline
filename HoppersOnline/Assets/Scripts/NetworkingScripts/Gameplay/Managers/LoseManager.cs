@@ -48,16 +48,22 @@ public class LoseManager : MonoBehaviour
 
     private int nPlayersLost = 0;
     UnityEvent<NetBaseHopper> onPlayerDead = new UnityEvent<NetBaseHopper>();
-    
+    private AudioSource source;
 
     private void Start()
     {
         view = GetComponent<PhotonView>();
+        source = GetComponent<AudioSource>();
 
         endPanel.SetActive(false);
 
-        NetGameManager.Instance.onGameEnded.AddListener(SetEndPanel);
+        //PlayerDead Event
         onPlayerDead.AddListener(PlayerDead);
+
+        //GameEnd Event
+        NetGameManager.Instance.onGameEnded.AddListener(SetEndPanel);
+        NetGameManager.Instance.onGameEnded.AddListener(source.Play);
+
 
     }
     private void Update()
