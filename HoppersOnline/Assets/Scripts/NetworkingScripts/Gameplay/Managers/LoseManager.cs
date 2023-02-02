@@ -80,7 +80,6 @@ public class LoseManager : MonoBehaviour
                     if (!hoppers[i].hasLost)
                     {
                         nPlayersLost++;
-                        Debug.Log("Muerto: " + hoppers[i].Hopper.playerNumber);
                         hoppers[i].hasLost = true;
 
                         onPlayerDead?.Invoke(hoppers[i].Hopper);

@@ -57,12 +57,6 @@ public class NetTalys : NetBaseHopper
         obj.SetActive(active);
     }
 
-    public override void EndUltimate()
-    {
-        isUlting = false;
-        //canUlt = true;
-    }
-
     public override void Damaged(Vector2 dir, float impulseForce)
     {
         if (!isUlting)

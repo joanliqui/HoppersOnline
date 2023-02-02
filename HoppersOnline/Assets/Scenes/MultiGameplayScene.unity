@@ -3883,8 +3883,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Hopp!
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9d7facabdce41af498c5198e5e8c5520, type: 2}
-  m_sharedMaterial: {fileID: -7398378385734811245, guid: 9d7facabdce41af498c5198e5e8c5520, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 1701ad44a038fc74a872627342c2217c, type: 2}
+  m_sharedMaterial: {fileID: -7398378385734811245, guid: 1701ad44a038fc74a872627342c2217c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4134,7 +4134,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canMove: 0
-  initialSpeed: 3
+  initialSpeed: 2
   accelerationPerFrame: 0.2
   maxSpeed: 12
 --- !u!114 &519420037
@@ -7859,7 +7859,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1004941676
 MonoBehaviour:
   m_ObjectHideFlags: 0

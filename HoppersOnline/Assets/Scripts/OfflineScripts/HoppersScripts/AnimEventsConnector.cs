@@ -29,4 +29,9 @@ public class AnimEventsConnector : MonoBehaviour
             netHopper.EndUltimate();
         }
     }
+
+    public void BoltzUltimate()
+    {
+
+    }
 }

@@ -113,7 +113,6 @@ public class NetMapBuilder : MonoBehaviour
         zonesInGame.Enqueue(zona);
         nBiomeZonesIn = 0;
 
-        Debug.Log("SwapBiome");
     }
     private void ChangeBackground()
     {
@@ -175,7 +174,7 @@ public class NetMapBuilder : MonoBehaviour
         int n;
         do
         {
-            n = Random.Range(0, biomes[actualBiome].zones.Length);
+            n = Random.Range(0, biomes[actualBiome].netZones.Length);
         } while (n == lastZone);
 
         lastZone = n;

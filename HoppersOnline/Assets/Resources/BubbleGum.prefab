@@ -156,7 +156,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hopperdCard: {fileID: 11400000, guid: dc916c58d0c27fd428440a25df129e3e, type: 2}
   playerNumber: 0
-  movSpeed: 900
+  movSpeed: 1000
   airMovementMultiplier: 0.8
   groundLayer:
     serializedVersion: 2
@@ -166,10 +166,11 @@ MonoBehaviour:
   maxJumpTime: 0.15
   initialJumpVelocity: 3000
   jumpCutMomentum: 0.2
+  coyoteTime: 0.1
+  jumpBufferTime: 0.15
   lowGravity: -20
   hardGravity: -90
   cooldown: 20
-  ultBarPrefab: {fileID: 2357493106988726264, guid: 666f077b4d585c847be52abc938df059, type: 3}
   damagedColor: {r: 0, g: 0, b: 0, a: 0}
   initialUltimateVelocity: 3000
   OnUltimatePerformed:
@@ -318,6 +319,12 @@ MonoBehaviour:
   - Type: 1
     SynchronizeType: 2
     Name: vVelocity
+  - Type: 4
+    SynchronizeType: 2
+    Name: isUlting
+  - Type: 4
+    SynchronizeType: 2
+    Name: isDamaged
   m_SynchronizeLayers:
   - SynchronizeType: 0
     LayerIndex: 0

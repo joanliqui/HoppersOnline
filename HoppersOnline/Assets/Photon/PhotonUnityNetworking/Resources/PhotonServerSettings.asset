@@ -66,6 +66,12 @@ MonoBehaviour:
   - AddHopper
   - SyncWinnerNumber
   - SetRandomZoneRPC
+  - InstantiateUltRay
+  - RayLaunch
+  - ActivateRayRPC
+  - DeactivateRay
+  - DamagedColorRPC
+  - DamagedRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

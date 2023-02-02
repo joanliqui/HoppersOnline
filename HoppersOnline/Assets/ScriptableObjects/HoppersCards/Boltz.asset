@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: baae604aaae6fb34d9aafd40bee38ffe, type: 3}
-  m_Name: TalysSO
+  m_Name: Boltz
   m_EditorClassIdentifier: 
-  characterName: Talys
-  characterSprite: {fileID: 605049481, guid: c479d55e5d1dac34e87a39b79d1124d2, type: 3}
-  netCharacterPrefab: {fileID: 7628258040096527772, guid: 84423b303b3d30946a39f07c00376b21, type: 3}
+  hopperNumber: 2
+  characterName: Boltz
+  characterSprite: {fileID: 21300000, guid: 3809e69f2d93daa4588bd81ad6676fce, type: 3}
+  netCharacterPrefab: {fileID: 265884343477982652, guid: 4c6f357e4520e534a87dec6a09a867f3, type: 3}
   offCharacterPrefab: {fileID: 0}

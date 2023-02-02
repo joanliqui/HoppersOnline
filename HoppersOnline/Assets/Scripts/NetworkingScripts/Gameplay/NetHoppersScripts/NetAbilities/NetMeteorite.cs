@@ -77,7 +77,7 @@ public class NetMeteorite : MonoBehaviour, IPooleable
                     dir = new Vector2(-2, 1);
                 }
 
-                obj.Damaged(dir, impulseForce);
+                obj.Damaged(dir.x, dir.y, impulseForce, other.GetComponent<PhotonView>().ViewID);
                 pool.ReturnToPool(this);
             }
         }

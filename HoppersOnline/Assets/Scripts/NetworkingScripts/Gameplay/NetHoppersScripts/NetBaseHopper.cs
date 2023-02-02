@@ -17,7 +17,7 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
     private bool pausedPressed;
     [Space(20)]
     [Header("Movement Settings")]
-    [SerializeField] protected float movSpeed = 4000;
+    [SerializeField] protected float movSpeed = 900;
     [Tooltip("A multiplier to reduce the mov Speed on air")]
     [Range(0, 1)]
     [SerializeField] float airMovementMultiplier = 0.8f;
@@ -38,8 +38,8 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
     bool roofTouch;
 
     [Header("JumpVariables")]
-    [SerializeField] float maxJumpTime = 0.5f;
-    [SerializeField] float initialJumpVelocity = 7000;
+    [SerializeField] float maxJumpTime = 0.15f;
+    [SerializeField] float initialJumpVelocity = 3000;
     [Range(0.0f, 1.0f)]
     [SerializeField] float jumpCutMomentum = 0.2f;
     [SerializeField] float coyoteTime = 0.1f;
@@ -55,13 +55,13 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
 
     //gravity variables
     [SerializeField] float lowGravity = -20f;
-    [SerializeField] float hardGravity = -100f;
+    [SerializeField] float hardGravity = -90f;
 
 
     //Ultimate Variables;
     [Header("UltimateVariables")]
     [SerializeField] protected float cooldown = 3f;
-    [SerializeField] NetUltBarController ultBarPrefab;
+    //[SerializeField] NetUltBarController ultBarPrefab;
     protected float cntUltTime = 0;
     protected bool canUlt = false;
     protected bool isUlting = false;
@@ -465,7 +465,7 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
 
     public virtual void EndUltimate()
     {
-
+        isUlting = false;
     }
 
     public void DisableAllInput()
@@ -479,21 +479,27 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
         startCld = true;
     }
 
-    #region INTERFACES
-    public void Damaged()
+    #region DAMAGE REGION
+
+    public virtual void Damaged(float x, float y, float impulseForce, int id)
     {
-        
+        view.RPC("DamagedRPC", RpcTarget.All, x, y, impulseForce, id);
     }
 
-    public virtual void Damaged(Vector2 dir, float impulseForce)
+    [PunRPC]
+    protected void DamagedRPC(float x, float y, float impulseForce, int id)
     {
-        isDamaged = true;
-        appliedMovement = dir * impulseForce;
+        if (PhotonNetwork.GetPhotonView(id).IsMine)
+        {
+            Vector2 dir = new Vector2(x, y);
+            isDamaged = true;
+            appliedMovement = dir * impulseForce;
+        }
         StartCoroutine(DisableInputCoroutine(0.1f));
         StartCoroutine(StopDamage());
+        
         StartCoroutine(DamagedColor());
     }
-    #endregion
 
     private IEnumerator StopDamage()
     {
@@ -512,4 +518,15 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
         sr.color = Color.white;
 
     }
+
+    public virtual void Damaged(Vector2 dir, float impulseForce)
+    {
+        isDamaged = true;
+        appliedMovement = dir * impulseForce;
+        StartCoroutine(DisableInputCoroutine(0.1f));
+        StartCoroutine(StopDamage());
+        StartCoroutine(DamagedColor());
+    }
+    #endregion
+
 }

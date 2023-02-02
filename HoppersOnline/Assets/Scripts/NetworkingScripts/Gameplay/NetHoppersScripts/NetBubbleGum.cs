@@ -48,9 +48,4 @@ public class NetBubbleGum : NetBaseHopper
             base.Gravity();
         }
     }
-
-    public override void EndUltimate()
-    {
-        isUlting = false;
-    }
 }

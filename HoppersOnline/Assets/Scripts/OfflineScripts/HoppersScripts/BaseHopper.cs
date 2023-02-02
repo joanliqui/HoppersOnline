@@ -334,6 +334,11 @@ public class BaseHopper : MonoBehaviour, IDamageable
     {
         throw new System.NotImplementedException();
     }
+
+    public void Damaged(float x, float y, float impulseForce, int id)
+    {
+        throw new System.NotImplementedException();
+    }
     #endregion
 
     private void OnDrawGizmos()
@@ -387,4 +392,6 @@ public class BaseHopper : MonoBehaviour, IDamageable
     {
         startCld = true;
     }
+
+   
 }
