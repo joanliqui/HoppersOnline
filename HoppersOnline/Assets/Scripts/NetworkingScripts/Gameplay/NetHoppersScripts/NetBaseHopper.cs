@@ -42,9 +42,16 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
     [SerializeField] float initialJumpVelocity = 7000;
     [Range(0.0f, 1.0f)]
     [SerializeField] float jumpCutMomentum = 0.2f;
-    private float cntTimeJumping;
+    [SerializeField] float coyoteTime = 0.1f;
+    [SerializeField] float jumpBufferTime = 0.15f;
+
+
     protected bool isJumping;
+    private bool bufferJump;
     private bool isJumpCanceled = false;
+    private float cntTimeJumping;
+    private float cntCoyoteTime;
+    private float cntJumpBufferTime;
 
     //gravity variables
     [SerializeField] float lowGravity = -20f;
@@ -124,15 +131,24 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
         isUltingHashAnim = Animator.StringToHash("isUlting");
         isDamagedHashAnim = Animator.StringToHash("isDamaged");
 
+        cntJumpBufferTime = jumpBufferTime;
+        
+
         if (view.IsMine)
         {
             OnPausePerformed += ToggleInputMap;
 
             _inputs.Player.Move.performed += ReadMovement;
             _inputs.Player.Move.canceled += ReadMovement;
+
             _inputs.Player.Jump.started += ctx =>
             {
                 isJumpCanceled = false;
+                if (!_isGrounded)
+                {
+                    cntJumpBufferTime = 0;
+                    bufferJump = false;
+                }
                 ReadJump(ctx);
             };
             _inputs.Player.Jump.canceled += ctx =>
@@ -170,6 +186,17 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
         {
             _isGrounded = IsGrounded();
             roofTouch = IsTouchingRoof();
+
+            CoyoteTimeHandler();
+
+            if(cntJumpBufferTime < jumpBufferTime)
+            {
+                cntJumpBufferTime += Time.deltaTime;
+                if (_isGrounded && !isJumping)
+                {
+                    bufferJump = true;
+                }
+            }
 
             HorizontalMovement();
 
@@ -261,6 +288,21 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
         }
 
     }
+
+    private void CoyoteTimeHandler()
+    {
+        if (_isGrounded)
+        {
+            cntCoyoteTime = 0;
+        }
+        else
+        {
+            if (cntCoyoteTime < coyoteTime)
+            {
+                cntCoyoteTime += Time.deltaTime;
+            }
+        }
+    }
     protected virtual void Gravity()
     {
         if (!isDamaged)
@@ -285,7 +327,7 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
             }
             else if (!isJumping && !_isGrounded) //Cayendo
             {
-                appliedMovement.y += hardGravity;
+                appliedMovement.y += hardGravity * Time.deltaTime * 100;
             }
             else if (isJumping && !_isGrounded)
             {
@@ -295,14 +337,19 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
     }
     private void Jump()
     {
-        if (isJumpPressed)
+        if (isJumpPressed || bufferJump)
         {
-            if (!isJumping && _isGrounded)
+            if (bufferJump) Debug.Log("BufferJump");
+            if (!isJumping)
             {
-                cntTimeJumping = 0;
-                appliedMovement.y = initialJumpVelocity;
+                if(_isGrounded || cntCoyoteTime < coyoteTime)
+                {
+                    cntTimeJumping = 0;
+                    cntJumpBufferTime = jumpBufferTime;
+                    appliedMovement.y = initialJumpVelocity;
 
-                isJumping = true;
+                    isJumping = true;
+                }
             }
             else if (isJumping)
             {
@@ -323,6 +370,7 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
     {
         appliedMovement.y = appliedMovement.y * jumpCutMomentum;
         isJumping = false;
+        bufferJump = false;
     }
 
     protected void CooldownUltimate()

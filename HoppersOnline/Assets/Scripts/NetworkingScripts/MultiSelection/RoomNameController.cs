@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.EventSystems;
 
-public class RoomNameController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
+public class RoomNameController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
 {
     [SerializeField] TextMeshProUGUI roomName;
     Animator anim;
@@ -37,5 +37,10 @@ public class RoomNameController : MonoBehaviour, IPointerEnterHandler, IPointerE
     {
         anim.SetTrigger("Pressed");
         CopyRoomName();
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        anim.SetTrigger("Normal");
     }
 }
