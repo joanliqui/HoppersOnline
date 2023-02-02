@@ -8,7 +8,7 @@ public class RoomNameController : MonoBehaviour, IPointerEnterHandler, IPointerE
 {
     [SerializeField] TextMeshProUGUI roomName;
     Animator anim;
-
+    [SerializeField] ErrorDisplayer messageDisplayer;
     private void Start()
     {
         anim = GetComponent<Animator>();
@@ -19,6 +19,7 @@ public class RoomNameController : MonoBehaviour, IPointerEnterHandler, IPointerE
         editor.text = roomName.text;
         editor.SelectAll();
         editor.Copy();
+        messageDisplayer.DisplayMessage("Codigo de la sala copiado al portapapeles");
     }
 
 
