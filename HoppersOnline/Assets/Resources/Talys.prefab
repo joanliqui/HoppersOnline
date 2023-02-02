@@ -306,20 +306,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hopperdCard: {fileID: 11400000, guid: 758cba56174489e4d973a0da6b2f7cf7, type: 2}
   playerNumber: 0
-  movSpeed: 4000
-  airMovementMultiplier: 0.8
+  movSpeed: 1000
+  airMovementMultiplier: 0.5
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
   groundCheckDistance: 0.02
   roofCheckDistance: 0.1
   maxJumpTime: 0.15
-  initialJumpVelocity: 7000
+  initialJumpVelocity: 2000
   jumpCutMomentum: 0.2
   lowGravity: -20
   hardGravity: -100
   cooldown: 15
   ultBarPrefab: {fileID: 2357493106988726264, guid: 666f077b4d585c847be52abc938df059, type: 3}
+  damagedColor: {r: 0, g: 0, b: 0, a: 0}
   nMeteors: 4
   pool: {fileID: 410107969}
 --- !u!114 &410107969

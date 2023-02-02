@@ -19,6 +19,7 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
     [Header("Movement Settings")]
     [SerializeField] protected float movSpeed = 4000;
     [Tooltip("A multiplier to reduce the mov Speed on air")]
+    [Range(0, 1)]
     [SerializeField] float airMovementMultiplier = 0.8f;
     [SerializeField] LayerMask groundLayer;
     [SerializeField] float groundCheckDistance = 0.02f;
@@ -62,12 +63,18 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
     public delegate void UltCharging(float progres);
     public event UltCharging OnUltCharging;
 
+    //Damaged
+    [SerializeField] Color damagedColor;
+    private SpriteRenderer sr;
+    private bool isDamaged = false;
+
     //Animator
     private Animator anim;
     private int hVelocityHashAnim;
     private int isGroundedHashAnim;
     private int vVelocityHashAnim;
     private int isUltingHashAnim;
+    private int isDamagedHashAnim;
 
     //Pause
     public delegate void PausePerformed();
@@ -109,11 +116,13 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
         col = GetComponent<Collider2D>();
         anim = GetComponentInChildren<Animator>();
         view = GetComponent<PhotonView>();
+        sr = GetComponentInChildren<SpriteRenderer>();
 
         hVelocityHashAnim = Animator.StringToHash("hVelocity");
         isGroundedHashAnim = Animator.StringToHash("isGrounded");
         vVelocityHashAnim = Animator.StringToHash("vVelocity");
         isUltingHashAnim = Animator.StringToHash("isUlting");
+        isDamagedHashAnim = Animator.StringToHash("isDamaged");
 
         if (view.IsMine)
         {
@@ -173,7 +182,6 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
             Gravity();
             Jump();
 
-            rb.velocity = appliedMovement * Time.deltaTime;
 
             if (hDir > 0 && !_isFacingRight) Flip();
             else if (hDir < 0 && _isFacingRight) Flip();
@@ -184,15 +192,23 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
             UpdateAnimations();
         }
     }
+
+    private void FixedUpdate()
+    {
+        rb.velocity = appliedMovement * Time.deltaTime;
+    }
     private void HorizontalMovement()
     {
-        if (_isGrounded)
+        if (!isDamaged)
         {
-            appliedMovement.x = hDir * movSpeed;
-        }
-        else
-        {
-            appliedMovement.x = hDir * movSpeed * airMovementMultiplier;
+            if (_isGrounded)
+            {
+                appliedMovement.x = hDir * movSpeed;
+            }
+            else
+            {
+                appliedMovement.x = hDir * movSpeed * airMovementMultiplier;
+            }
         }
     }
 
@@ -247,29 +263,34 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
     }
     protected virtual void Gravity()
     {
-        if (!isJumping && _isGrounded)
+        if (!isDamaged)
         {
-            currentMovement.y = -0.1f;
-            appliedMovement.y = -0.1f;
-        }
-        else if (isJumping && !_isGrounded)
-        {
-            if (appliedMovement.y > 0)
+            if (!isJumping && _isGrounded)
             {
-                appliedMovement.y += lowGravity * Time.deltaTime;
+          
+                currentMovement.y = -0.1f;
+                appliedMovement.y = -0.1f;
+            
             }
-            else //Apex
+            else if (isJumping && !_isGrounded)
+            {
+                if (appliedMovement.y > 0)
+                {
+                    appliedMovement.y += lowGravity * Time.deltaTime;
+                }
+                else //Apex
+                {
+                    appliedMovement.y += hardGravity * Time.deltaTime;
+                }
+            }
+            else if (!isJumping && !_isGrounded) //Cayendo
             {
                 appliedMovement.y += hardGravity;
             }
-        }
-        else if (!isJumping && !_isGrounded) //Cayendo
-        {
-            appliedMovement.y += hardGravity;
-        }
-        else if (isJumping && !_isGrounded)
-        {
-            Debug.Log("Pa tocar los huevos");
+            else if (isJumping && !_isGrounded)
+            {
+                Debug.Log("Pa tocar los huevos");
+            }
         }
     }
     private void Jump()
@@ -280,6 +301,7 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
             {
                 cntTimeJumping = 0;
                 appliedMovement.y = initialJumpVelocity;
+
                 isJumping = true;
             }
             else if (isJumping)
@@ -320,7 +342,7 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
         }
     }
 
-    #region ReadInput
+#region ReadInput
     private void ReadMovement(InputAction.CallbackContext ctx)
     {
         hDir = ctx.ReadValue<float>();
@@ -331,19 +353,9 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
         isJumpPressed = ctx.ReadValueAsButton();
     }
 
-    #endregion
+#endregion
 
-    #region INTERFACES
-    public void Damaged()
-    {
-        throw new NotImplementedException();
-    }
 
-    public void Damaged(Vector2 dir, float impulseForce)
-    {
-        throw new NotImplementedException();
-    }
-    #endregion
 
     private void OnDrawGizmos()
     {
@@ -361,6 +373,7 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
         anim.SetFloat(hVelocityHashAnim, Mathf.Abs(rb.velocity.x));
         anim.SetFloat(vVelocityHashAnim, rb.velocity.y);
         anim.SetBool(isUltingHashAnim, isUlting);
+        anim.SetBool(isDamagedHashAnim, isDamaged);
     }
 
     public void ToggleInputMap()
@@ -416,5 +429,39 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
     public void StartCooldown()
     {
         startCld = true;
+    }
+
+    #region INTERFACES
+    public void Damaged()
+    {
+        
+    }
+
+    public virtual void Damaged(Vector2 dir, float impulseForce)
+    {
+        isDamaged = true;
+        appliedMovement = dir * impulseForce;
+        StartCoroutine(DisableInputCoroutine(0.1f));
+        StartCoroutine(StopDamage());
+        StartCoroutine(DamagedColor());
+    }
+    #endregion
+
+    private IEnumerator StopDamage()
+    {
+        yield return new WaitForSeconds(0.15f);
+        isDamaged = false;
+    }
+
+    private IEnumerator DamagedColor()
+    {
+        sr.color = damagedColor;
+        yield return new WaitForSeconds(0.1f);
+        sr.color = Color.white;
+        yield return new WaitForSeconds(0.1f);
+        sr.color = damagedColor;
+        yield return new WaitForSeconds(0.1f);
+        sr.color = Color.white;
+
     }
 }

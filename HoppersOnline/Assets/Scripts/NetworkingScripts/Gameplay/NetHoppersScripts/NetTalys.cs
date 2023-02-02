@@ -62,4 +62,12 @@ public class NetTalys : NetBaseHopper
         isUlting = false;
         //canUlt = true;
     }
+
+    public override void Damaged(Vector2 dir, float impulseForce)
+    {
+        if (!isUlting)
+        {
+            base.Damaged(dir, impulseForce);
+        }
+    }
 }

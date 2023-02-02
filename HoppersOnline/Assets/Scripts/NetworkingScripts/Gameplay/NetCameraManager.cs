@@ -7,9 +7,10 @@ public class NetCameraManager : MonoBehaviour
 {
     [SerializeField] bool canMove = false;
     [SerializeField] float initialSpeed = 1f;
-    
-    [SerializeField] private float cntSpeed;
-    private float t = 1;
+    [SerializeField] float accelerationPerFrame;
+    [SerializeField] float maxSpeed = 30f;
+    private float cntSpeed;
+    private float stopLerp = 1;
 
     private void Start()
     {
@@ -24,11 +25,14 @@ public class NetCameraManager : MonoBehaviour
     {
         if (!canMove) return;
 
-        if (PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient || !PhotonNetwork.IsConnected)
         {
             if (canMove)
             {
                 transform.position += Vector3.up * cntSpeed * Time.deltaTime;
+
+                if(cntSpeed < maxSpeed)
+                    cntSpeed += accelerationPerFrame * Time.deltaTime;
             }
         }
     }
@@ -36,10 +40,10 @@ public class NetCameraManager : MonoBehaviour
 
     public void StopCameraMovement()
     {
-        t -= Time.deltaTime * 2;
+        stopLerp -= Time.deltaTime * 2;
         if(cntSpeed > 0)
         {
-            cntSpeed = Mathf.Lerp(0.0f, cntSpeed, t);
+            cntSpeed = Mathf.Lerp(0.0f, cntSpeed, stopLerp);
         }
     }
 

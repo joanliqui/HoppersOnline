@@ -14,7 +14,7 @@ public static class RandomPassword
 
         for (int i = 0; i < longitud; i++)
         {
-            letter = caracteres[rdn.Next(longitud)];
+            letter = caracteres[rdn.Next(l)];
             password += letter.ToString();
         }
 

@@ -6,7 +6,7 @@ public class CanvasManager : MonoBehaviour
 {
     [SerializeField] List<GameObject> canvasList;
 
-    private void Start()
+    private void Awake()
     {
         foreach (GameObject item in canvasList)
         {

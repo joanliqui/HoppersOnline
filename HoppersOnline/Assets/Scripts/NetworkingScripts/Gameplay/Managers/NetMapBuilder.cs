@@ -24,6 +24,8 @@ public class NetMapBuilder : MonoBehaviour
     private int actualBiome;
     private int nBiomeZonesIn = 0;
     private int lastBiome = -1;
+    private int actualZone;
+    private int lastZone = -1;
 
     Queue<NetBiomeObject> zonesInGame;
 
@@ -124,10 +126,8 @@ public class NetMapBuilder : MonoBehaviour
 
     private void InstantiateRandomZone()
     {
-        int randZone; //Se genera un numero random entre 0 y el maximo de zonas que tiene el bioma que le pasamos
-        randZone = Random.Range(0, biomes[actualBiome].zones.Length);
-
-        GameObject newZoneObject = PhotonNetwork.Instantiate("BiomeZones/" + biomes[actualBiome].netZones[randZone].name, connectorSpawnPoint, Quaternion.identity);
+        view.RPC("SetRandomZoneRPC", RpcTarget.All);
+        GameObject newZoneObject = PhotonNetwork.Instantiate("BiomeZones/" + biomes[actualBiome].netZones[actualZone].name, connectorSpawnPoint, Quaternion.identity);
 
         NetBiomeObject newZone = newZoneObject.GetComponent<NetBiomeObject>();
         connectorSpawnPoint = newZone.GetConnectorPoint().position;
@@ -162,5 +162,23 @@ public class NetMapBuilder : MonoBehaviour
 
         lastBiome = n;
         return n; ;
+    }
+
+    [PunRPC]
+    private void SetRandomZoneRPC()
+    {
+        actualZone = GetRandomZone();
+    }
+
+    private int GetRandomZone()
+    {
+        int n;
+        do
+        {
+            n = Random.Range(0, biomes[actualBiome].zones.Length);
+        } while (n == lastZone);
+
+        lastZone = n;
+        return n;
     }
 }

@@ -19,7 +19,6 @@ public class RoomNameController : MonoBehaviour, IPointerEnterHandler, IPointerE
         editor.text = roomName.text;
         editor.SelectAll();
         editor.Copy();
-        anim.SetTrigger("Normal");
     }
 
 
@@ -37,5 +36,6 @@ public class RoomNameController : MonoBehaviour, IPointerEnterHandler, IPointerE
     public void OnPointerDown(PointerEventData eventData)
     {
         anim.SetTrigger("Pressed");
+        CopyRoomName();
     }
 }
