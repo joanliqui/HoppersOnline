@@ -11,6 +11,7 @@ TagManager:
   - UltBarContainer
   - GameManager
   - WrappingCamera
+  - SoloData
   layers:
   - Default
   - TransparentFX

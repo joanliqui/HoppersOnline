@@ -62,7 +62,16 @@ public class Meteorite : MonoBehaviour, IPooleable
         {
             if (!other.gameObject.TryGetComponent(out Talys t))
             {
-                obj.Damaged(transform.position, impulseForce);
+                Vector2 dir;
+                if (other.transform.position.x > transform.position.x)
+                {
+                    dir = new Vector2(2, 1);
+                }
+                else
+                {
+                    dir = new Vector2(-2, 1);
+                }
+                obj.Damaged(dir, impulseForce);
                 pool.ReturnToPool(this);
             }
         }

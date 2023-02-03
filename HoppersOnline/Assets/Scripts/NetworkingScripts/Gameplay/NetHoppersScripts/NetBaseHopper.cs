@@ -15,6 +15,7 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
     private float hDir = 0;
     private bool isJumpPressed;
     private bool pausedPressed;
+
     [Space(20)]
     [Header("Movement Settings")]
     [SerializeField] protected float movSpeed = 900;
@@ -61,7 +62,6 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
     //Ultimate Variables;
     [Header("UltimateVariables")]
     [SerializeField] protected float cooldown = 3f;
-    //[SerializeField] NetUltBarController ultBarPrefab;
     protected float cntUltTime = 0;
     protected bool canUlt = false;
     protected bool isUlting = false;
@@ -339,7 +339,6 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
     {
         if (isJumpPressed || bufferJump)
         {
-            if (bufferJump) Debug.Log("BufferJump");
             if (!isJumping)
             {
                 if(_isGrounded || cntCoyoteTime < coyoteTime)

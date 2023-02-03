@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: baae604aaae6fb34d9aafd40bee38ffe, type: 3}
   m_Name: Talys
   m_EditorClassIdentifier: 
+  hopperNumber: 0
   characterName: Talys
   characterSprite: {fileID: 605049481, guid: c479d55e5d1dac34e87a39b79d1124d2, type: 3}
   netCharacterPrefab: {fileID: 7628258040096527772, guid: 84423b303b3d30946a39f07c00376b21, type: 3}
-  offCharacterPrefab: {fileID: 0}
+  offCharacterPrefab: {fileID: 6804445288995471258, guid: 2d90c12b8c4ff574fa368891d48053dc, type: 3}

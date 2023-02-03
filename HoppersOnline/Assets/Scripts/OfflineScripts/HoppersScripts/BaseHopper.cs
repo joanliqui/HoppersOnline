@@ -15,8 +15,9 @@ public class BaseHopper : MonoBehaviour, IDamageable
 
     [Space(20)]
     [Header("Movement Settings")]
-    [SerializeField] protected float movSpeed = 1000;
+    [SerializeField] protected float movSpeed = 900;
     [Tooltip("A multiplier to reduce the mov Speed on air")]
+    [Range(0, 1)]
     [SerializeField] protected float airMovementMultiplier = 0.8f;
     [SerializeField] LayerMask groundLayer;
     [SerializeField] float groundCheckDistance = 0.02f;
@@ -35,17 +36,23 @@ public class BaseHopper : MonoBehaviour, IDamageable
     bool roofTouch;
 
     [Header("JumpVariables")] 
-    [SerializeField] float maxJumpTime = 0.5f;
-    [SerializeField] float initialJumpVelocity = 7000f;
+    [SerializeField] float maxJumpTime = 0.15f;
+    [SerializeField] float initialJumpVelocity = 3000;
     [Range(0.0f, 1.0f)]
     [SerializeField] float jumpCutMomentum = 0.2f;
-    private float cntTimeJumping;
+    [SerializeField] float coyoteTime = 0.1f;
+    [SerializeField] float jumpBufferTime = 0.15f;
+
     protected bool isJumping;
+    private bool bufferJump;
+    private float cntTimeJumping;
     private bool isJumpCanceled = false;
+    private float cntCoyoteTime;
+    private float cntJumpBufferTime;
 
     //gravity variables
     [SerializeField] float lowGravity = -20f;
-    [SerializeField] float hardGravity = -100f;
+    [SerializeField] float hardGravity = -90f;
 
     //Ultimate Variables;
     [Header("UltimateVariables")]
@@ -59,14 +66,21 @@ public class BaseHopper : MonoBehaviour, IDamageable
     public delegate void UltCharging(float progres);
     public event UltCharging OnUltCharging;
 
+    //Damaged
+    [SerializeField] Color damagedColor;
+    private SpriteRenderer sr;
+    private bool isDamaged = false;
+
     //Animator
     private Animator anim;
     private int hVelocityHashAnim;
     private int isGroundedHashAnim;
     private int vVelocityHashAnim;
     private int isUltingHashAnim;
+    private int isDamagedHashAnim;
 
     //Pause
+    private bool isPaused = false;
     public delegate void PausePerformed();
     public event PausePerformed OnPausePerformed;
 
@@ -99,17 +113,27 @@ public class BaseHopper : MonoBehaviour, IDamageable
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
         anim = GetComponentInChildren<Animator>();
+        sr = GetComponentInChildren<SpriteRenderer>();
 
         hVelocityHashAnim = Animator.StringToHash("hVelocity");
         isGroundedHashAnim = Animator.StringToHash("isGrounded");
         vVelocityHashAnim = Animator.StringToHash("vVelocity");
         isUltingHashAnim = Animator.StringToHash("isUlting");
+        isDamagedHashAnim = Animator.StringToHash("isDamaged");
+
+        cntJumpBufferTime = jumpBufferTime;
+
 
         _inputs.Player.Move.performed += ReadMovement;
         _inputs.Player.Move.canceled += ReadMovement;
         _inputs.Player.Jump.started += ctx =>
         {
             isJumpCanceled = false;
+            if (!_isGrounded)
+            {
+                cntJumpBufferTime = 0;
+                bufferJump = false;
+            }
             ReadJump(ctx);
         };
         _inputs.Player.Jump.canceled += ctx => 
@@ -133,6 +157,7 @@ public class BaseHopper : MonoBehaviour, IDamageable
         {
             pausedPressed = false;
         };
+        OnPausePerformed += ToggleInputMap;
 
         //Ability
         _inputs.Player.Ability.started += Abilitie;
@@ -147,6 +172,17 @@ public class BaseHopper : MonoBehaviour, IDamageable
         _isGrounded = IsGrounded();
         roofTouch = IsTouchingRoof();
 
+        CoyoteTimeHandler();
+
+        if (cntJumpBufferTime < jumpBufferTime)
+        {
+            cntJumpBufferTime += Time.deltaTime;
+            if (_isGrounded && !isJumping)
+            {
+                bufferJump = true;
+            }
+        }
+
         HorizontalMovement();
         
         if (roofTouch && appliedMovement.y > 0)
@@ -157,9 +193,6 @@ public class BaseHopper : MonoBehaviour, IDamageable
 
         Gravity();
         Jump();
-
-
-        rb.velocity = appliedMovement * Time.deltaTime;
         
         if (hDir > 0 && !_isFacingRight) Flip();
         else if (hDir < 0 && _isFacingRight) Flip();
@@ -170,15 +203,23 @@ public class BaseHopper : MonoBehaviour, IDamageable
         UpdateAnimations();
     }
 
+    private void FixedUpdate()
+    {
+        rb.velocity = appliedMovement * Time.deltaTime;
+    }
+
     protected virtual void HorizontalMovement()
     {
-        if (_isGrounded)
+        if (!isDamaged)
         {
-            appliedMovement.x = hDir * movSpeed;
-        }
-        else
-        {
-            appliedMovement.x = hDir * movSpeed * airMovementMultiplier;
+            if (_isGrounded)
+            {
+                appliedMovement.x = hDir * movSpeed;
+            }
+            else
+            {
+                appliedMovement.x = hDir * movSpeed * airMovementMultiplier;
+            }
         }
     }
     private void Flip()
@@ -232,47 +273,72 @@ public class BaseHopper : MonoBehaviour, IDamageable
 
     }
 
+    private void CoyoteTimeHandler()
+    {
+        if (_isGrounded)
+        {
+            cntCoyoteTime = 0;
+        }
+        else
+        {
+            if (cntCoyoteTime < coyoteTime)
+            {
+                cntCoyoteTime += Time.deltaTime;
+            }
+        }
+    }
+
     protected virtual void Gravity()
     {
-        if(!isJumping && _isGrounded)
+        if (!isDamaged)
         {
-            currentMovement.y = -0.1f;
-            appliedMovement.y = -0.1f;
-        }
-        else if(isJumping && !_isGrounded)
-        {
-            if(appliedMovement.y > 0)
+            if (!isJumping && _isGrounded)
             {
-                appliedMovement.y += lowGravity * Time.deltaTime;
+
+                currentMovement.y = -0.1f;
+                appliedMovement.y = -0.1f;
+
             }
-            else //Apex
+            else if (isJumping && !_isGrounded)
             {
-                appliedMovement.y += hardGravity;
+                if (appliedMovement.y > 0)
+                {
+                    appliedMovement.y += lowGravity * Time.deltaTime;
+                }
+                else //Apex
+                {
+                    appliedMovement.y += hardGravity * Time.deltaTime;
+                }
             }
-        }
-        else if(!isJumping && !_isGrounded) //Cayendo
-        {
-            appliedMovement.y += hardGravity;
-        }
-        else if(isJumping && !_isGrounded)
-        {
-            Debug.Log("Pa tocar los huevos");
+            else if (!isJumping && !_isGrounded) //Cayendo
+            {
+                appliedMovement.y += hardGravity * Time.deltaTime * 100;
+            }
+            else if (isJumping && !_isGrounded)
+            {
+                Debug.Log("Pa tocar los huevos");
+            }
         }
     }
 
     private void Jump()
     {
-        if (isJumpPressed)
+        if (isJumpPressed || bufferJump)
         {
-            if(!isJumping && _isGrounded)
+            if (!isJumping)
             {
-                cntTimeJumping = 0;
-                appliedMovement.y = initialJumpVelocity;
-                isJumping = true;
+                if (_isGrounded || cntCoyoteTime < coyoteTime)
+                {
+                    cntTimeJumping = 0;
+                    cntJumpBufferTime = jumpBufferTime;
+                    appliedMovement.y = initialJumpVelocity;
+
+                    isJumping = true;
+                }
             }
             else if (isJumping)
-            {   
-                if(cntTimeJumping < maxJumpTime)
+            {
+                if (cntTimeJumping < maxJumpTime)
                 {
                     cntTimeJumping += Time.deltaTime;
                     appliedMovement.y = initialJumpVelocity;
@@ -284,14 +350,13 @@ public class BaseHopper : MonoBehaviour, IDamageable
                 }
             }
         }
-
     }
 
     private void CutJumpOnCancelOrApex()
     {
         appliedMovement.y = appliedMovement.y * jumpCutMomentum;
         isJumping = false;
-        Debug.Log("Cuted");
+        bufferJump = false;
     }
     protected void CooldownUltimate()
     {
@@ -324,23 +389,6 @@ public class BaseHopper : MonoBehaviour, IDamageable
 
     #endregion
 
-    #region Interfaces
-    public void Damaged()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void Damaged(Vector2 dir, float impulseForce)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void Damaged(float x, float y, float impulseForce, int id)
-    {
-        throw new System.NotImplementedException();
-    }
-    #endregion
-
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
@@ -357,6 +405,26 @@ public class BaseHopper : MonoBehaviour, IDamageable
         anim.SetFloat(hVelocityHashAnim, Mathf.Abs(rb.velocity.x));
         anim.SetFloat(vVelocityHashAnim, rb.velocity.y);
         anim.SetBool(isUltingHashAnim, isUlting);
+        anim.SetBool(isDamagedHashAnim, isDamaged);
+    }
+
+    protected void ToggleInputMap()
+    {
+        isPaused = !isPaused;
+
+        if (isPaused)
+        {
+            _inputs.Player.Move.Disable();
+            _inputs.Player.Jump.Disable();
+            _inputs.Player.Ability.Disable();
+        }
+        else
+        {
+            _inputs.Player.Move.Enable();
+            _inputs.Player.Jump.Enable();
+            _inputs.Player.Ability.Enable();
+        }
+        
     }
 
     protected virtual void Abilitie(InputAction.CallbackContext ctx)
@@ -373,7 +441,7 @@ public class BaseHopper : MonoBehaviour, IDamageable
 
     public virtual void EndUltimate()
     {
-
+        isUlting = false;
     }
 
     protected void SpawnUltBar()
@@ -393,5 +461,53 @@ public class BaseHopper : MonoBehaviour, IDamageable
         startCld = true;
     }
 
-   
+    #region DAMAGE REGION
+    public void Damaged()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void Damaged(Vector2 dir, float impulseForce)
+    {
+        isDamaged = true;
+        appliedMovement = dir * impulseForce;
+
+        StartCoroutine(DisableInputCoroutine(0.1f));
+        StartCoroutine(StopDamage());
+
+        StartCoroutine(DamagedColor());
+    }
+
+    public void Damaged(float x, float y, float impulseForce, int id)
+    {
+      
+        Vector2 dir = new Vector2(x, y);
+        isDamaged = true;
+        appliedMovement = dir * impulseForce;
+
+        StartCoroutine(DisableInputCoroutine(0.1f));
+        StartCoroutine(StopDamage());
+
+        StartCoroutine(DamagedColor());
+    }
+    private IEnumerator StopDamage()
+    {
+        yield return new WaitForSeconds(0.15f);
+        isDamaged = false;
+    }
+
+    private IEnumerator DamagedColor()
+    {
+        sr.color = damagedColor;
+        yield return new WaitForSeconds(0.1f);
+        sr.color = Color.white;
+        yield return new WaitForSeconds(0.1f);
+        sr.color = damagedColor;
+        yield return new WaitForSeconds(0.1f);
+        sr.color = Color.white;
+
+    }
+    #endregion
+
+
 }

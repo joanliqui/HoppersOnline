@@ -22,19 +22,21 @@ public class PlayerSpawner : MonoBehaviour
     {
         view = GetComponent<PhotonView>();
         gameMode = GameObject.FindGameObjectWithTag("GameMode").GetComponent<GameMode>();
-        if(gameMode != null)
+
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            spawnPoints[i] = transform.GetChild(i);
+        }
+
+        if (gameMode != null)
         {
             if(gameMode.GetGameMode() == GameModeEnum.Solo)
             {
-
+                HopperData data = GameObject.FindGameObjectWithTag("SoloData").GetComponent<HopperData>();
+                GameObject hopp = Instantiate(data.SelectedCharacter, spawnPoints[0].position, Quaternion.identity);
             }
             else
             {
-                for (int i = 0; i < transform.childCount; i++)
-                {
-                    spawnPoints[i] = transform.GetChild(i);
-                }
-
                 if(PhotonNetwork.CurrentRoom != null)
                 {
                     Debug.LogError("My PlayerNumber: " + PhotonNetwork.LocalPlayer.CustomProperties["playerNumber"]);

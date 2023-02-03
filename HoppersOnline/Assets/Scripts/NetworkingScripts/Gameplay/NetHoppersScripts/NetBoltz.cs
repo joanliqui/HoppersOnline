@@ -15,7 +15,6 @@ public class NetBoltz : NetBaseHopper
     {
         if (view.IsMine)
         {
-            Debug.LogError("BoltzHere");
             reusableRay = PhotonNetwork.Instantiate("AbilityPrefab/" + rayPrefab.name, new Vector3(0, - 20, 0), Quaternion.identity);
             view.RPC("DeactivateRay", RpcTarget.All, reusableRay.GetPhotonView().ViewID);
         }
