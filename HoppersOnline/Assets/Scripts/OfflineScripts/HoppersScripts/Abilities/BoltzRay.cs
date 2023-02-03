@@ -1,22 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Photon.Pun;
 
-public class NetBoltzRay : MonoBehaviour
+public class BoltzRay : MonoBehaviour
 {
-    PhotonView view;
     [SerializeField] float impulseForce = 1000;
-
-    void Start()
-    {
-        view = GetComponent<PhotonView>();
-    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!PhotonNetwork.IsMasterClient) return;
-
         if (collision.TryGetComponent<IDamageable>(out IDamageable obj))
         {
             if (!collision.gameObject.TryGetComponent(out Talys t))
@@ -31,12 +22,12 @@ public class NetBoltzRay : MonoBehaviour
                     dir = new Vector2(-2, 1);
                 }
 
-                obj.Damaged(dir.x, dir.y, impulseForce, collision.GetComponent<PhotonView>().ViewID);
+                obj.Damaged();
             }
         }
     }
 
-    public void TurnOffRayRPC()
+    public void TurnOffRay()
     {
         gameObject.SetActive(false);
     }

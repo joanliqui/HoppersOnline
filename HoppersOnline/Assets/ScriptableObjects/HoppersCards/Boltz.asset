@@ -16,4 +16,4 @@ MonoBehaviour:
   characterName: Boltz
   characterSprite: {fileID: 21300000, guid: 3809e69f2d93daa4588bd81ad6676fce, type: 3}
   netCharacterPrefab: {fileID: 265884343477982652, guid: 4c6f357e4520e534a87dec6a09a867f3, type: 3}
-  offCharacterPrefab: {fileID: 0}
+  offCharacterPrefab: {fileID: 3985649931078740631, guid: 0bd7a51cd2b842545a9a3428a7f0cbe3, type: 3}

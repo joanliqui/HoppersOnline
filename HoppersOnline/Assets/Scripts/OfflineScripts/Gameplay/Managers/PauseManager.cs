@@ -31,7 +31,7 @@ public class PauseManager : MonoBehaviour
         pausePanelObject.SetActive(false);
         isPaused = false;
 
-        hopperInGame = GameObject.FindGameObjectWithTag("Player").GetComponent<BaseHopper>();
+        hopperInGame = SoloGameManager.Instance.SoloHopper;
 
         if(hopperInGame != null)
             hopperInGame.OnPausePerformed += TooglePause;

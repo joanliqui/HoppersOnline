@@ -8,6 +8,7 @@ public class UltBarController : MonoBehaviour
     public float progress;
     [SerializeField] Image progressImage;
     [SerializeField] Color utlimateColor;
+    [SerializeField] Image hopperImage;
     BaseHopper hopper;
 
     //Component References
@@ -27,7 +28,7 @@ public class UltBarController : MonoBehaviour
         {
             hopper.OnUltCharging -= UpdateBar;
         }
-
+        hopperImage.sprite = hop.HopperdCard.characterSprite;
         hopper = hop;
         hopper.OnUltCharging += UpdateBar;
     }

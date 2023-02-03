@@ -49,7 +49,8 @@ public class NetGameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        //loseManager.UpdateHoppersList(hoppersInGame);
+        spawner.SpawnPlayers();
+
         view = GetComponent<PhotonView>();
     }
 

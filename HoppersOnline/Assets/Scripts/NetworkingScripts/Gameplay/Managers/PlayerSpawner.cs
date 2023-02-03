@@ -13,15 +13,22 @@ public class PlayerSpawner : MonoBehaviour
     private GameMode gameMode;
 
     List<NetBaseHopper> hoppersInGame = new List<NetBaseHopper>();
+    BaseHopper soloHopper;
     UltimateBarsManager barManager;
    
 
     public UnityEvent<NetBaseHopper> onPlayerSpawn;
-    
-    void Awake()
+
+    public BaseHopper SoloHopper { get => soloHopper; set => soloHopper = value; }
+
+    public void SpawnPlayers()
     {
-        view = GetComponent<PhotonView>();
         gameMode = GameObject.FindGameObjectWithTag("GameMode").GetComponent<GameMode>();
+
+        if(gameMode.GetGameMode() == GameModeEnum.Muliplayer)
+        {
+            view = GetComponent<PhotonView>();
+        }
 
         for (int i = 0; i < transform.childCount; i++)
         {
@@ -30,14 +37,18 @@ public class PlayerSpawner : MonoBehaviour
 
         if (gameMode != null)
         {
-            if(gameMode.GetGameMode() == GameModeEnum.Solo)
+            if (gameMode.GetGameMode() == GameModeEnum.Solo)
             {
                 HopperData data = GameObject.FindGameObjectWithTag("SoloData").GetComponent<HopperData>();
-                GameObject hopp = Instantiate(data.SelectedCharacter, spawnPoints[0].position, Quaternion.identity);
+                if (data)
+                {
+                    GameObject hopp = Instantiate(data.SelectedCharacter, spawnPoints[0].position, Quaternion.identity);
+                    soloHopper = hopp.GetComponent<BaseHopper>();
+                }
             }
             else
             {
-                if(PhotonNetwork.CurrentRoom != null)
+                if (PhotonNetwork.CurrentRoom != null)
                 {
                     Debug.LogError("My PlayerNumber: " + PhotonNetwork.LocalPlayer.CustomProperties["playerNumber"]);
                     Transform spawnPoint = spawnPoints[(int)PhotonNetwork.LocalPlayer.CustomProperties["playerNumber"] - 1];
@@ -53,6 +64,7 @@ public class PlayerSpawner : MonoBehaviour
             }
         }
     }
+
 
     [PunRPC]
     private void AddHopper(int id)

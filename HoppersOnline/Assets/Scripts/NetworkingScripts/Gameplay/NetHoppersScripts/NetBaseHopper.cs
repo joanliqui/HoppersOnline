@@ -480,6 +480,11 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
 
     #region DAMAGE REGION
 
+    public void Damaged()
+    {
+        throw new System.NotImplementedException();
+    }
+
     public virtual void Damaged(float x, float y, float impulseForce, int id)
     {
         view.RPC("DamagedRPC", RpcTarget.All, x, y, impulseForce, id);
