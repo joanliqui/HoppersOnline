@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class LobbyManager2 : MonoBehaviourPunCallbacks
 {
@@ -19,6 +20,11 @@ public class LobbyManager2 : MonoBehaviourPunCallbacks
 
     private void Awake()
     {
+        if(MusicManager.Instance != null)
+        {
+            MusicManager.Instance.GetActualScene();
+        }
+
         lobbyPanel.SetActive(false);
         roomPanel.SetActive(false);
         Time.timeScale = 1f;
@@ -129,5 +135,11 @@ public class LobbyManager2 : MonoBehaviourPunCallbacks
         roomPanel.SetActive(false);
 
         selectionManager.OnLeaveRoom();
+    }
+
+    public void OnPlayDisconectButton()
+    {
+        cts.DisconectServer();
+        SceneManager.LoadScene("MainMenuScene");
     }
 }

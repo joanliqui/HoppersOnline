@@ -27,13 +27,11 @@ public class NetCameraManager : MonoBehaviour
 
         if (PhotonNetwork.IsMasterClient || !PhotonNetwork.IsConnected)
         {
-            if (canMove)
-            {
-                transform.position += Vector3.up * cntSpeed * Time.deltaTime;
+            transform.position += Vector3.up * cntSpeed * Time.deltaTime;
 
-                if(cntSpeed < maxSpeed)
-                    cntSpeed += accelerationPerFrame * Time.deltaTime;
-            }
+            if(cntSpeed < maxSpeed)
+                cntSpeed += accelerationPerFrame * Time.deltaTime;
+            
         }
     }
 

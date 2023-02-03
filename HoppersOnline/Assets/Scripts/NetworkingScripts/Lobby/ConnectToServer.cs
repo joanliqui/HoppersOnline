@@ -12,4 +12,9 @@ public class ConnectToServer : MonoBehaviourPunCallbacks
         PhotonNetwork.MinimalTimeScaleToDispatchInFixedUpdate = 0;
         PhotonNetwork.ConnectUsingSettings();
     }
+
+    public void DisconectServer()
+    {
+        PhotonNetwork.Disconnect();
+    }
 }

@@ -161,6 +161,7 @@ GameObject:
   - component: {fileID: 3985649931078740629}
   - component: {fileID: 8445397440037468591}
   - component: {fileID: 4534272739416483068}
+  - component: {fileID: 4791285987664443588}
   m_Layer: 7
   m_Name: BoltzSolo
   m_TagString: Player
@@ -264,3 +265,15 @@ MonoBehaviour:
   damagedColor: {r: 0, g: 0, b: 0, a: 0}
   rayPrefab: {fileID: 5504888851410499100, guid: 984980e3d93635a48802362facfafc38, type: 3}
   socket: {fileID: 9011526589469033403}
+--- !u!114 &4791285987664443588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3985649931078740631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5914d2b7535d16b4f8d0dd408f7032b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

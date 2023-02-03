@@ -39,8 +39,17 @@ public class PlayerSpawner : MonoBehaviour
         {
             if (gameMode.GetGameMode() == GameModeEnum.Solo)
             {
-                HopperData data = GameObject.FindGameObjectWithTag("SoloData").GetComponent<HopperData>();
-                if (data)
+                HopperData data = null;
+                try
+                {
+                    data = GameObject.FindGameObjectWithTag("SoloData").GetComponent<HopperData>();
+                }
+                catch (System.Exception)
+                {
+                    Debug.Log("No hay data");
+                }
+
+                if (data != null)
                 {
                     GameObject hopp = Instantiate(data.SelectedCharacter, spawnPoints[0].position, Quaternion.identity);
                     soloHopper = hopp.GetComponent<BaseHopper>();
@@ -50,7 +59,6 @@ public class PlayerSpawner : MonoBehaviour
             {
                 if (PhotonNetwork.CurrentRoom != null)
                 {
-                    Debug.LogError("My PlayerNumber: " + PhotonNetwork.LocalPlayer.CustomProperties["playerNumber"]);
                     Transform spawnPoint = spawnPoints[(int)PhotonNetwork.LocalPlayer.CustomProperties["playerNumber"] - 1];
                     GameObject playerToSpawn = listSO.charactersList[(int)PhotonNetwork.LocalPlayer.CustomProperties["playerAvatar"]].GetCharacterPrefab(true);
                     GameObject player = PhotonNetwork.Instantiate(playerToSpawn.name, spawnPoint.position, Quaternion.identity);

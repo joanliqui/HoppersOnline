@@ -29,6 +29,7 @@ public class NetGameManager : MonoBehaviour
     List<NetBaseHopper> hoppersInGame = new List<NetBaseHopper>();
     [SerializeField] PlayerSpawner spawner;
     [SerializeField] LoseManager loseManager;
+    [SerializeField] CanvasManager canvasManager;
 
     //NO SE QUE HACER CON ESTO
     public Dictionary<Player, NetBaseHopper> playerHopperDictionary = new Dictionary<Player, NetBaseHopper>();
@@ -52,6 +53,10 @@ public class NetGameManager : MonoBehaviour
         spawner.SpawnPlayers();
 
         view = GetComponent<PhotonView>();
+        canvasManager.ActivateAllCanvas();
+
+        if(MusicManager.Instance)
+            MusicManager.Instance.GetActualScene();
     }
 
     private void Start()
@@ -135,6 +140,14 @@ public class NetGameManager : MonoBehaviour
         foreach (NetBaseHopper item in hoppersInGame)
         {
             item.DisableAllInput();
+        }
+    }
+
+    public void EnableAllInput()
+    {
+        foreach (NetBaseHopper item in hoppersInGame)
+        {
+            item.EnableAllInput();
         }
     }
 

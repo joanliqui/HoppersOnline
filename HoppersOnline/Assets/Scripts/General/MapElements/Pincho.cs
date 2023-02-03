@@ -1,22 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Photon.Pun;
 public class Pincho : MonoBehaviour
 {
     [SerializeField] float impulseForce;
     private int pointUpDir;
-
+    [SerializeField] bool pointUp;
     private void Start()
     {
-        if(transform.localRotation.z > 90 || transform.localRotation.z < -90)
-        {
-            pointUpDir = -1;
-        }
-        else
-        {
-            pointUpDir = 1;
-        }
+        pointUpDir = pointUp ? 1 : -1;
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -31,7 +24,7 @@ public class Pincho : MonoBehaviour
             {
                 dir = new Vector2(-1, pointUpDir);
             }
-            player.Damaged(dir, impulseForce);
+            player.Damaged(dir.x, dir.y, impulseForce, collision.GetComponent<PhotonView>().ViewID);
         }
     }
 }

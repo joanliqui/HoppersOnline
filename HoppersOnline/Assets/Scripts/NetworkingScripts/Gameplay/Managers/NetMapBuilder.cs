@@ -116,7 +116,6 @@ public class NetMapBuilder : MonoBehaviour
     }
     private void ChangeBackground()
     {
-        Debug.Log("ChangeBackground");
         actualBG.transform.parent = null;
         actualBG.DetachBackgroundRPC();
         SpawnNewBackground();

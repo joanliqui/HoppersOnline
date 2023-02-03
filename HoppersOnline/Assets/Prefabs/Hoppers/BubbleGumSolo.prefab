@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 445512074399114375}
   - component: {fileID: 7242705517159394772}
   - component: {fileID: 5823232996919667207}
+  - component: {fileID: -8164303425046861744}
   m_Layer: 0
   m_Name: BubbleGumSolo
   m_TagString: Player
@@ -213,24 +214,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hopperdCard: {fileID: 11400000, guid: dc916c58d0c27fd428440a25df129e3e, type: 2}
-  movSpeed: 4000
+  movSpeed: 900
   airMovementMultiplier: 0.8
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  groundCheckDistance: 0.2
+  groundCheckDistance: 0.02
   roofCheckDistance: 0.1
-  maxJumpTime: 0.25
-  initialJumpVelocity: 6500
+  maxJumpTime: 0.15
+  initialJumpVelocity: 3000
   jumpCutMomentum: 0.2
   coyoteTime: 0.1
   jumpBufferTime: 0.15
   lowGravity: -20
-  hardGravity: -100
+  hardGravity: -90
   cooldown: 3
   ultBarPrefab: {fileID: 5664380267365987584, guid: dde1ad1ecc85adb46b03fd9bfafc564a, type: 3}
   damagedColor: {r: 0, g: 0, b: 0, a: 0}
-  initialUltimateVelocity: 7000
+  initialUltimateVelocity: 4000
   OnUltimatePerformed:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &-8164303425046861744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 697411297561913766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5914d2b7535d16b4f8d0dd408f7032b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

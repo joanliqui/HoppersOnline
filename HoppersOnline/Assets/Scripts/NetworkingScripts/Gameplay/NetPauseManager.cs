@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.SceneManagement;
+using UnityEngine.Audio;
+using UnityEngine.EventSystems;
 
 public class NetPauseManager : MonoBehaviour
 {
@@ -12,6 +14,10 @@ public class NetPauseManager : MonoBehaviour
     [SerializeField] GameObject pausePanelObject;
     List<NetBaseHopper> hoppersInGame = new List<NetBaseHopper>();
 
+    [SerializeField] AudioMixerSnapshot pausedSnapshot;
+    [SerializeField] AudioMixerSnapshot unpausedSnapshot;
+
+    [SerializeField] EventSystem eventSystem;
     //Component References
     PhotonView view;
 
@@ -68,15 +74,32 @@ public class NetPauseManager : MonoBehaviour
     [PunRPC]
     private void TogglePauseRPC()
     {
-        Debug.Log("TogglePause");
         isPaused = !isPaused;
+        Debug.Log("PauseFunc on PAUSE");
+
         Time.timeScale = isPaused ? 0 : 1;
+        if (isPaused)
+        {
+            pausedSnapshot.TransitionTo(0f);
+        }
+        else
+        {
+            unpausedSnapshot.TransitionTo(0f);
+            NetGameManager.Instance.EnableAllInput();
+        }
 
         pausePanelObject.SetActive(isPaused);
     }
 
+    public void DeselectAllButtons()
+    {
+        eventSystem.SetSelectedGameObject(null);
+    }
+
+
     public void OnMainMenuPressed()
     {
+        unpausedSnapshot.TransitionTo(0f);
         Time.timeScale = 1f;
         if (PhotonNetwork.IsMasterClient)
         {
@@ -86,6 +109,7 @@ public class NetPauseManager : MonoBehaviour
         {
             view.RPC("LoadLobbyScene", RpcTarget.All);
         }
+        
     }
 
     [PunRPC]

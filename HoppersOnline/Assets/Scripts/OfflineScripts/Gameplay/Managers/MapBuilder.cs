@@ -93,7 +93,6 @@ public class MapBuilder : MonoBehaviour
     private void SpawnNewBackground()
     {
         actualBG = Instantiate(biomes[actualBiome].background, cam.position, Quaternion.identity);
-        Debug.Log(actualBG.gameObject.name);
         actualBG.InitiateBackground(cam, orderInLayer);
         orderInLayer--;
     }

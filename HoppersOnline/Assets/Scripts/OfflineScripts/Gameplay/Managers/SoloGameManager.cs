@@ -23,10 +23,12 @@ public class SoloGameManager : MonoBehaviour
 
     BaseHopper soloHopper;
     [SerializeField] PlayerSpawner spawner;
+    [SerializeField] CanvasManager canvasManager;
     //[SerializeField] LoseManager loseManager;
 
     public static SoloGameManager Instance { get => _instance; set => _instance = value; }
     public BaseHopper SoloHopper { get => soloHopper; set => soloHopper = value; }
+    public bool GameEnded { get => gameEnded; set => gameEnded = value; }
 
     private void Awake()
     {
@@ -38,8 +40,11 @@ public class SoloGameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        canvasManager.ActivateAllCanvas();
         spawner.SpawnPlayers();
         soloHopper = spawner.SoloHopper;
+
+        MusicManager.Instance.GetActualScene();
     }
 
     private void Start()
@@ -55,7 +60,10 @@ public class SoloGameManager : MonoBehaviour
         //GameEnded Events
         //onGameEnded.AddListener(SetEndPanel);
         onGameEnded.AddListener(GameFaseEnded);
-        onGameEnded.AddListener(soloHopper.DisableAllInput);
+        if (soloHopper)
+        {
+            onGameEnded.AddListener(soloHopper.DisableAllInput);
+        }
     }
 
     private void Update()
@@ -83,7 +91,8 @@ public class SoloGameManager : MonoBehaviour
 
     public void StartHopperCooldown()
     {
-        soloHopper.StartCooldown();
+        if(soloHopper)
+            soloHopper.StartCooldown();
     }
 
     public void GamesFaseStart()

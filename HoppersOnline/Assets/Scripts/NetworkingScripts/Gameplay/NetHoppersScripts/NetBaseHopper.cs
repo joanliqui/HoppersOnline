@@ -433,6 +433,7 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
     {
         if (view.IsMine)
         {
+            Debug.Log("PauseFunc on Hopper");
             isPaused = !isPaused;
 
             if (isPaused)
@@ -471,6 +472,12 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
     {
         if(view.IsMine)
             _inputs.Player.Disable();
+    }
+
+    public void EnableAllInput()
+    {
+        if(view.IsMine)
+            _inputs.Player.Enable();
     }
 
     public void StartCooldown()
