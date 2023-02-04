@@ -75,7 +75,6 @@ public class NetPauseManager : MonoBehaviour
     private void TogglePauseRPC()
     {
         isPaused = !isPaused;
-        Debug.Log("PauseFunc on PAUSE");
 
         Time.timeScale = isPaused ? 0 : 1;
         if (isPaused)

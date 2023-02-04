@@ -40,7 +40,7 @@ public class NetMeteorite : MonoBehaviour, IPooleable
     {
         initialVolume = source.volume;
         source.pitch = Random.Range(0.6f, 1.4f);
-        source.volume = initialVolume - Random.Range(-0.4f, 0.4f);
+        source.volume = initialVolume - Random.Range(-0.1f, 0.3f);
         cntLifeTime = 0;
 
         source.Play();
@@ -65,7 +65,7 @@ public class NetMeteorite : MonoBehaviour, IPooleable
 
         if (other.TryGetComponent<IDamageable>(out IDamageable obj))
         {
-            if (!other.gameObject.TryGetComponent(out Talys t))
+            if (!other.gameObject.TryGetComponent(out NetTalys t))
             {
                 Vector2 dir;
                 if(other.transform.position.x > transform.position.x)

@@ -43,8 +43,8 @@ public class SoloGameManager : MonoBehaviour
         canvasManager.ActivateAllCanvas();
         spawner.SpawnPlayers();
         soloHopper = spawner.SoloHopper;
-
-        MusicManager.Instance.GetActualScene();
+        if(MusicManager.Instance)
+            MusicManager.Instance.GetActualScene();
     }
 
     private void Start()

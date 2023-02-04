@@ -8,6 +8,7 @@ public class AnimEventsConnector : MonoBehaviour
 
     NetBaseHopper netHopper;
     BaseHopper hopperOffline;
+  
 
     private void Start()
     {
@@ -16,6 +17,8 @@ public class AnimEventsConnector : MonoBehaviour
         {
             transform.parent.TryGetComponent<BaseHopper>(out hopperOffline);
         }
+
+       
     }
 
     public void EndUltimate()
@@ -28,10 +31,5 @@ public class AnimEventsConnector : MonoBehaviour
         {
             netHopper.EndUltimate();
         }
-    }
-
-    public void BoltzUltimate()
-    {
-
     }
 }

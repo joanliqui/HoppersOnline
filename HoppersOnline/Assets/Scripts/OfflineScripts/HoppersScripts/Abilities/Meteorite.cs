@@ -37,7 +37,7 @@ public class Meteorite : MonoBehaviour, IPooleable
     {
         initialVolume = source.volume;
         source.pitch = Random.Range(0.6f, 1.4f);
-        source.volume = initialVolume - Random.Range(-0.4f, 0.4f);
+        source.volume = initialVolume - Random.Range(-0.1f, 0.3f);
         cntLifeTime = 0;
 
         source.Play();

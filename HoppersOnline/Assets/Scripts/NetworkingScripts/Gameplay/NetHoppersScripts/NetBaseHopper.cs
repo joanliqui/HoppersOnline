@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using Photon.Pun;
 
@@ -26,7 +27,7 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
     [SerializeField] float groundCheckDistance = 0.02f;
 
     private bool _isFacingRight = true;
-    private bool _isGrounded;
+    protected bool _isGrounded;
     protected Vector2 appliedMovement;
     protected Vector2 currentMovement;
     private Vector2 posLeftRay;
@@ -55,8 +56,8 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
     private float cntJumpBufferTime;
 
     //gravity variables
-    [SerializeField] float lowGravity = -20f;
-    [SerializeField] float hardGravity = -90f;
+    [SerializeField] protected float lowGravity = -20f;
+    [SerializeField] protected float hardGravity = -90f;
 
 
     //Ultimate Variables;
@@ -66,6 +67,7 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
     protected bool canUlt = false;
     protected bool isUlting = false;
     private bool startCld = false;
+    protected UnityEvent onUltPerformed = new UnityEvent();
 
     public delegate void UltCharging(float progres);
     public event UltCharging OnUltCharging;
@@ -433,7 +435,6 @@ public class NetBaseHopper : MonoBehaviour, IDamageable
     {
         if (view.IsMine)
         {
-            Debug.Log("PauseFunc on Hopper");
             isPaused = !isPaused;
 
             if (isPaused)

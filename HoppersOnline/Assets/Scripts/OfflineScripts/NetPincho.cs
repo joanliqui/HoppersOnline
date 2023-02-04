@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-public class Pincho : MonoBehaviour
+public class NetPincho : MonoBehaviour
 {
     [SerializeField] float impulseForce;
     private int pointUpDir;

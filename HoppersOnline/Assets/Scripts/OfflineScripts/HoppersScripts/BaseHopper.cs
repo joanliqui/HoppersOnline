@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Events;
 
 public class BaseHopper : MonoBehaviour, IDamageable
 {
@@ -51,8 +52,8 @@ public class BaseHopper : MonoBehaviour, IDamageable
     private float cntJumpBufferTime;
 
     //gravity variables
-    [SerializeField] float lowGravity = -20f;
-    [SerializeField] float hardGravity = -90f;
+    [SerializeField] protected float lowGravity = -20f;
+    [SerializeField] protected float hardGravity = -90f;
 
     //Ultimate Variables;
     [Header("UltimateVariables")]
@@ -62,6 +63,7 @@ public class BaseHopper : MonoBehaviour, IDamageable
     protected bool canUlt = false;
     protected bool isUlting = false;
     private bool startCld = false;
+    protected UnityEvent onUltPerformed = new UnityEvent();
 
     public delegate void UltCharging(float progres);
     public event UltCharging OnUltCharging;

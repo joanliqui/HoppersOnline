@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 265884342119691197}
   - component: {fileID: 2920838534112337802}
   - component: {fileID: 2809108113664068338}
+  - component: {fileID: 3482714357134930235}
+  - component: {fileID: 621061058697564000}
   m_Layer: 7
   m_Name: BoltzGFX
   m_TagString: Untagged
@@ -152,6 +154,116 @@ MonoBehaviour:
   m_SynchronizeLayers:
   - SynchronizeType: 0
     LayerIndex: 0
+--- !u!82 &3482714357134930235
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 265884342119691194}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: -9103209615256302835, guid: 7f286a7fd1f26d84e94cf678c6b58bd3, type: 2}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 0.3
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &621061058697564000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 265884342119691194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7676e5043dc88cd42b5045d1cb71878d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stepSounds: {fileID: 8300000, guid: c96d7324ee9f8f74c9fa21fc1833b900, type: 3}
+  ultimateSound: {fileID: 8300000, guid: c359dd9171587c045b7c66b16d1b837b, type: 3}
 --- !u!1 &265884343477982652
 GameObject:
   m_ObjectHideFlags: 0
@@ -166,6 +278,7 @@ GameObject:
   - component: {fileID: 265884343477982640}
   - component: {fileID: 4740978835761710724}
   - component: {fileID: 3667075892415920215}
+  - component: {fileID: 2147281782596627089}
   m_Layer: 7
   m_Name: Boltz
   m_TagString: Player
@@ -248,6 +361,8 @@ MonoBehaviour:
   damagedColor: {r: 0, g: 0, b: 0, a: 0}
   rayPrefab: {fileID: 3182626057615092940, guid: 964dcf500cfe80b45adcfb7f1e5cc4c7, type: 3}
   socket: {fileID: 5327789867598347408}
+  ultimateClip: {fileID: 8300000, guid: c359dd9171587c045b7c66b16d1b837b, type: 3}
+  source: {fileID: 3482714357134930235}
 --- !u!114 &265884343477982640
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -326,6 +441,18 @@ MonoBehaviour:
     InterpolateOption: 0
     InterpolateMoveTowardsSpeed: 1
     InterpolateLerpSpeed: 0
+--- !u!114 &2147281782596627089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 265884343477982652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5914d2b7535d16b4f8d0dd408f7032b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3635294056681289462
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,6 +8,9 @@ public class MusicGameplayManager : MonoBehaviour
     AudioSource source;
     bool oneTake = false;
 
+    bool canSound = true;
+    [SerializeField] AudioClip endSound;
+
     private void Awake()
     {
         source = GetComponent<AudioSource>();
@@ -17,11 +20,13 @@ public class MusicGameplayManager : MonoBehaviour
 
     private void Start()
     {
-        NetGameManager.Instance.onGameEnded.AddListener(source.Stop);
+        NetGameManager.Instance.onGameEnded.AddListener(EndMusic);
     }
 
     private void Update()
     {
+        if (!canSound) return;
+
         if (!oneTake)
         {
             if (!source.isPlaying && source.clip == clips[0])
@@ -32,6 +37,14 @@ public class MusicGameplayManager : MonoBehaviour
                 source.loop = true;
             }
         }
+    }
+
+    private void EndMusic()
+    {
+        canSound = false;
+        source.Stop();
+        source.clip = endSound;
+        source.Play();
     }
 
 }

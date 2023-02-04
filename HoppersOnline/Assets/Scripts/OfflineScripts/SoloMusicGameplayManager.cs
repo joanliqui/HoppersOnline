@@ -7,6 +7,8 @@ public class SoloMusicGameplayManager : MonoBehaviour
     [SerializeField] AudioClip[] clips = new AudioClip[2];
     AudioSource source;
     bool oneTake = false;
+    bool canSound = true;
+    [SerializeField] AudioClip endSound;
 
     private void Awake()
     {
@@ -17,11 +19,12 @@ public class SoloMusicGameplayManager : MonoBehaviour
 
     private void Start()
     {
-        SoloGameManager.Instance.onGameEnded.AddListener(source.Stop);
+        SoloGameManager.Instance.onGameEnded.AddListener(EndMusic);
     }
 
     private void Update()
     {
+        if (!canSound) return;
         if (!oneTake)
         {
             if (!source.isPlaying && source.clip == clips[0])
@@ -32,5 +35,13 @@ public class SoloMusicGameplayManager : MonoBehaviour
                 source.loop = true;
             }
         }
+    }
+
+    private void EndMusic()
+    {
+        canSound = false;
+        source.Stop();
+        source.clip = endSound;
+        source.Play();
     }
 }
