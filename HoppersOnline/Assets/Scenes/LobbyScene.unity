@@ -2689,7 +2689,7 @@ MonoBehaviour:
   holdersContent: {fileID: 1941493162}
   charactersList: {fileID: 11400000, guid: 0fb15f4c9bce81e48b54927727775377, type: 2}
   playButton: {fileID: 2075472364}
-  minimumPlayers: 1
+  minimumPlayers: 2
 --- !u!114 &683736902
 MonoBehaviour:
   m_ObjectHideFlags: 0

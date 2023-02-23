@@ -74,4 +74,9 @@ public class SoloSelectionManager : MonoBehaviour
         SceneManager.LoadScene("SoloGameplayScene");
     }
 
+    public void OnExitRoomButton()
+    {
+        SceneManager.LoadScene("MainMenuScene");
+    }
+
 }

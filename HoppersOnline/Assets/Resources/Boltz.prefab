@@ -357,7 +357,7 @@ MonoBehaviour:
   jumpBufferTime: 0.15
   lowGravity: -20
   hardGravity: -90
-  cooldown: 3
+  cooldown: 13
   damagedColor: {r: 0, g: 0, b: 0, a: 0}
   rayPrefab: {fileID: 3182626057615092940, guid: 964dcf500cfe80b45adcfb7f1e5cc4c7, type: 3}
   socket: {fileID: 5327789867598347408}

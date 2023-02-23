@@ -435,10 +435,10 @@ MonoBehaviour:
   jumpBufferTime: 0.15
   lowGravity: -20
   hardGravity: -90
-  cooldown: 2
+  cooldown: 14
   damagedColor: {r: 0, g: 0, b: 0, a: 0}
   nMeteors: 4
-  pool: {fileID: 0}
+  pool: {fileID: 410107969}
 --- !u!114 &410107969
 MonoBehaviour:
   m_ObjectHideFlags: 0

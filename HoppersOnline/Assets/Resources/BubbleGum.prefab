@@ -170,7 +170,7 @@ MonoBehaviour:
   jumpBufferTime: 0.15
   lowGravity: -20
   hardGravity: -90
-  cooldown: 20
+  cooldown: 15
   damagedColor: {r: 0, g: 0, b: 0, a: 0}
   initialUltimateVelocity: 3000
   OnUltimatePerformed:
